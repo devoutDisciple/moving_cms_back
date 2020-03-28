@@ -6,8 +6,8 @@ module.exports = {
 	// goodsPreUrl: "http://www.bws666.com/goods/",
 	// swiperPreUrl: "http://www.bws666.com/",
 	// 本地环境
-	goodsImgFilePath: "/Users/zhangzhen/program/guanzhou/guangzhou_ms/guangzhou_ms_back/public/goods", // 商品描述图片
-	swiperImgFilePath: "/Users/zhangzhen/program/guanzhou/guangzhou_ms/guangzhou_ms_back/public",// swiper图片
+	goodsImgFilePath: "/Users/zhangzhen/moving/cms_back/public", // 商品描述图片
+	swiperImgFilePath: "/Users/zhangzhen/moving/cms_back/public",// swiper图片
 	swiperPreUrl: "http://localhost:3002/",
 	goodsPreUrl: "http://localhost:3002/goods/",
 

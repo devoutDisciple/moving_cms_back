@@ -1,10 +1,9 @@
-const resultMessage = require("../util/resultMessage");
-const sequelize = require("../dataSource/MysqlPoolClass");
-const rate = require("../models/rate");
+const resultMessage = require('../util/resultMessage');
+const sequelize = require('../dataSource/MysqlPoolClass');
+const rate = require('../models/rate');
 const rateModel = rate(sequelize);
 
 module.exports = {
-
 	// 获取提现费率
 	getAll: async (req, res) => {
 		try {
@@ -26,10 +25,10 @@ module.exports = {
 			};
 			await rateModel.update(params, {
 				where: {
-					id: body.id
-				}
+					id: body.id,
+				},
 			});
-			res.send(resultMessage.success("success"));
+			res.send(resultMessage.success('success'));
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));

@@ -15,6 +15,32 @@ const appConfig = require("../config/AppConfig");
 
 module.exports = {
 
+	// 获取所有店铺信息
+	getAll: async(req, res) => {
+		try {
+			let name = req.query.name;
+			let where = {
+				is_delete: {
+					[Op.not]: ["2"]
+				},
+			};
+			name ? where.name = {
+				[Op.like]: "%" + name + "%"
+			} : null;
+			let shops = await ShopModel.findAll({
+				where: where,
+				order: [
+					// will return `name`  DESC 降序  ASC 升序
+					["sort", "DESC"],
+				]
+			});
+			res.send(resultMessage.success(shops));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
 	// 开启或者关闭自动打印
 	startAutoPrint: async (req, res) => {
 		try {
@@ -87,37 +113,7 @@ module.exports = {
 		}
 	},
 
-	// 获取所有商店信息
-	getAll: async(req, res) => {
-		try {
-			let name = req.query.name;
-			let where = {
-				is_delete: {
-					[Op.not]: ["2"]
-				},
-				campus: req.query.position
-			};
-			name ? where.name = {
-				[Op.like]: "%" + name + "%"
-			} : null;
-			let swiper = await ShopModel.findAll({
-				where: where,
-				order: [
-					// will return `name`  DESC 降序  ASC 升序
-					["sort", "DESC"],
-				]
-			});
-			let result = [];
-			swiper.map(item => {
-				let value = item.dataValues;
-				result.push(value);
-			});
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
+
 
 	// 增加店铺
 	addShop: async(req, res) => {

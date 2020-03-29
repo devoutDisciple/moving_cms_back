@@ -13,6 +13,10 @@ module.exports = function(sequelize) {
 			type: Sequelize.STRING(45),
 			allowNull: false
 		},
+		manager: {
+			type: Sequelize.STRING(255),
+			allowNull: true
+		},
 		phone: {
 			type: Sequelize.STRING(255),
 			allowNull: true
@@ -22,6 +26,14 @@ module.exports = function(sequelize) {
 			allowNull: true,
 			defaultValue: "地址"
 		},
+		longitude: {
+			type: Sequelize.STRING(255),
+			allowNull: true
+		},
+		latitude: {
+			type: Sequelize.STRING(255),
+			allowNull: true
+		},
 		sn: {
 			type: Sequelize.STRING(255),
 			allowNull: true
@@ -29,11 +41,6 @@ module.exports = function(sequelize) {
 		key: {
 			type: Sequelize.STRING(255),
 			allowNull: true
-		},
-		campus: {
-			type: Sequelize.STRING(45),
-			allowNull: true,
-			defaultValue: "北京大学"
 		},
 		sales: {
 			type: Sequelize.INTEGER(11),
@@ -45,34 +52,9 @@ module.exports = function(sequelize) {
 			allowNull: true,
 			defaultValue: "地址"
 		},
-		start_price: {
-			type: Sequelize.INTEGER(11),
-			allowNull: false,
-			defaultValue: "0"
-		},
-		send_price: {
-			type: Sequelize.INTEGER(11),
-			allowNull: false,
-			defaultValue: "0"
-		},
 		special: {
 			type: Sequelize.STRING(800),
 			allowNull: true
-		},
-		start_time: {
-			type: Sequelize.STRING(255),
-			allowNull: true,
-			defaultValue: "00:00"
-		},
-		end_time: {
-			type: Sequelize.STRING(255),
-			allowNull: true,
-			defaultValue: "23:59"
-		},
-		status: {
-			type: Sequelize.INTEGER(11),
-			allowNull: true,
-			defaultValue: "1"
 		},
 		invite: {
 			type: Sequelize.INTEGER(11),

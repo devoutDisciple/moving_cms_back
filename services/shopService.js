@@ -9,8 +9,6 @@ const shop = require('../models/shop');
 const ShopModel = shop(sequelize);
 const account = require('../models/account');
 const AccountModel = account(sequelize);
-const goods = require('../models/goods');
-const GoodsModel = goods(sequelize);
 const fs = require('fs');
 const appConfig = require('../config/AppConfig');
 
@@ -33,7 +31,7 @@ module.exports = {
 				where: where,
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(shops, ['id', 'name', 'manager', 'phone', 'address', 'longitude', 'latitude', 'sort']);
+			let result = responseUtil.renderFieldsAll(shops, ['id', 'name', 'manager', 'phone', 'address', 'sort', 'desc']);
 			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
@@ -51,7 +49,7 @@ module.exports = {
 				},
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsObj(shop, ['id', 'name', 'manager', 'phone', 'address', 'longitude', 'latitude', 'sort']);
+			let result = responseUtil.renderFieldsObj(shop, ['id', 'name', 'manager', 'phone', 'address', 'longitude', 'latitude', 'sort', 'desc']);
 			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
@@ -100,6 +98,23 @@ module.exports = {
 			let shop = await ShopModel.create(body);
 			await AccountModel.create({ username, password, shopid: shop.id, role: 2 });
 			res.send(resultMessage.success('success'));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 获取店铺的账号密码
+	getAccountByShopId: async (req, res) => {
+		try {
+			let shopid = req.query.shopid;
+			let account = await AccountModel.findOne({
+				where: {
+					shopid: shopid,
+				},
+			});
+			let result = responseUtil.renderFieldsObj(account, ['id', 'username', 'password']);
+			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));
@@ -156,59 +171,13 @@ module.exports = {
 		}
 	},
 
-	// 通过商店id获取商店数据
-	getShopByShopid: async (req, res) => {
-		try {
-			let shop = await ShopModel.findOne({
-				where: {
-					id: req.query.id,
-				},
-			});
-			res.send(resultMessage.success(shop));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
-	// 获取所有商店列表
-	getAllForSelect: async (req, res) => {
-		try {
-			let swiper = await ShopModel.findAll({
-				where: {
-					is_delete: {
-						[Op.not]: ['2'],
-					},
-					campus: req.query.position,
-				},
-				order: [
-					// will return `name`  DESC 降序  ASC 升序
-					['sort', 'ASC'],
-				],
-			});
-			let result = [];
-			swiper.map((item) => {
-				let value = item.dataValues;
-				let obj = {
-					id: value.id,
-					name: value.name,
-				};
-				result.push(obj);
-			});
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
 	// 修改店铺
 	updateShop: async (req, res) => {
 		try {
 			let body = req.body;
 			await ShopModel.update(body, {
 				where: {
-					id: body.id,
+					id: body.shopid,
 				},
 			});
 			res.send(resultMessage.success('success'));

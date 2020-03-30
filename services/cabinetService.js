@@ -1,40 +1,28 @@
-const resultMessage = require('../util/resultMessage');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-const sequelize = require('../dataSource/MysqlPoolClass');
-const swiper = require('../models/swiper');
-const SwiperModel = swiper(sequelize);
-const responseUtil = require('../util/responseUtil');
-const shop = require('../models/shop');
-const shopModel = shop(sequelize);
-const AppConfig = require('../config/AppConfig');
-let preUrl = AppConfig.swiperPreUrl;
 const fs = require('fs');
-let filePath = AppConfig.swiperImgFilePath;
+const resultMessage = require('../util/resultMessage');
+const sequelize = require('../dataSource/MysqlPoolClass');
+const cabinet = require('../models/cabinet');
+const CabinetModel = cabinet(sequelize);
+const shop = require('../models/shop');
+const ShopModel = shop(sequelize);
+// ShopModel.belongsTo(CabinetModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
+CabinetModel.belongsTo(ShopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
+const AppConfig = require('../config/AppConfig');
+const preUrl = AppConfig.swiperPreUrl;
 const ImageDeal = require('../util/ImagesDeal');
-SwiperModel.belongsTo(shopModel, { foreignKey: 'shop_id', targetKey: 'id', as: 'shopDetail' });
+const filePath = AppConfig.swiperImgFilePath;
+const responseUtil = require('../util/responseUtil');
 
 module.exports = {
+	// 获取所有快递柜子
 	getAll: async (req, res) => {
+		// let {} = req.query;
 		try {
-			let swiper = await SwiperModel.findAll({
-				where: {
-					is_delete: {
-						[Op.not]: ['2'],
-					},
-				},
-				include: [
-					{
-						model: shopModel,
-						as: 'shopDetail',
-					},
-				],
+			let Cabinets = await CabinetModel.findAll({
+				where: {},
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shop_id', 'url', 'sort', 'create_time']);
-			result.forEach((item, index) => {
-				item.shopName = swiper[index]['shopDetail']['name'] || '';
-			});
+			let result = responseUtil.renderFieldsAll(Cabinets, ['id', 'shopid', 'name', 'address', 'url', 'sort', 'create_time']);
 			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
@@ -42,25 +30,23 @@ module.exports = {
 		}
 	},
 
+	// 根据商店ip获取快递柜
 	getByShopId: async (req, res) => {
 		try {
-			let shopid = req.query.shopid;
-			let swiper = await SwiperModel.findAll({
+			let { shopid } = req.query;
+			let swiper = await CabinetModel.findAll({
 				where: {
-					is_delete: {
-						[Op.not]: ['2'],
-					},
-					shop_id: shopid,
+					shopid: shopid,
 				},
 				include: [
 					{
-						model: shopModel,
+						model: ShopModel,
 						as: 'shopDetail',
 					},
 				],
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shop_id', 'url', 'sort', 'create_time']);
+			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'name', 'address', 'url', 'sort', 'create_time']);
 			result.forEach((item, index) => {
 				item.shopName = swiper[index]['shopDetail']['name'] || '';
 			});
@@ -71,17 +57,19 @@ module.exports = {
 		}
 	},
 
-	// 增加轮播图
+	// 增加快递柜
 	add: async (req, res, filename) => {
 		try {
 			let body = req.body;
 			let params = {
-				shop_id: body.shopid,
+				shopid: body.shopid,
+				name: body.name,
 				sort: body.sort,
+				address: body.address,
 				create_time: body.create_time,
 			};
 			filename ? (params.url = preUrl + filename) : null;
-			await SwiperModel.create(params);
+			await CabinetModel.create(params);
 			res.send(resultMessage.success('success'));
 			ImageDeal.dealImages(`${filePath}/${filename}`);
 		} catch (error) {
@@ -93,37 +81,38 @@ module.exports = {
 		}
 	},
 
-	// 更新轮播图
-	update: async (req, res, filename) => {
-		try {
-			let body = req.body;
-			let params = { sort: body.sort };
-			filename ? (params.url = preUrl + filename) : null;
-			await SwiperModel.update(params, {
-				where: {
-					id: body.id,
-				},
-			});
-			res.send(resultMessage.success('success'));
-			ImageDeal.dealImages(`${filePath}/${filename}`);
-		} catch (error) {
-			fs.exists(`${filePath}/${filename}`, () => {
-				fs.unlinkSync(`${filePath}/${filename}`);
-			});
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
+	// 删除快递柜
 	delete: async (req, res) => {
 		try {
-			await SwiperModel.destroy({
+			await CabinetModel.destroy({
 				where: {
 					id: req.body.id,
 				},
 			});
 			res.send(resultMessage.success('success'));
 		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 更新柜子
+	update: async (req, res, filename) => {
+		try {
+			let { id, sort, name, address } = req.body;
+			let params = { sort, name, address };
+			filename ? (params.url = preUrl + filename) : null;
+			await CabinetModel.update(params, {
+				where: {
+					id: id,
+				},
+			});
+			res.send(resultMessage.success('success'));
+			ImageDeal.dealImages(`${filePath}/${filename}`);
+		} catch (error) {
+			fs.exists(`${filePath}/${filename}`, () => {
+				fs.unlinkSync(`${filePath}/${filename}`);
+			});
 			console.log(error);
 			return res.send(resultMessage.error([]));
 		}

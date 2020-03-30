@@ -17,6 +17,7 @@ module.exports = {
 			return res.send(resultMessage.error([]));
 		}
 	},
+
 	// 用户登录
 	register: (req, res) => {
 		try {

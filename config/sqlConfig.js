@@ -3,10 +3,10 @@ module.exports = {
 	// password		: 	"QAZwsx!@#$1234",
 	// host			:  	"47.106.208.52",
 	// database		: 	"guangzhou",
-	username		: 	"root",
-	password		: 	"admin",
-	host			:  	"localhost",
-	database		: 	"laundry",
-	dialect			: 	"mysql",
-	timezone   		:	"+08:00"
+	username: 'root',
+	password: 'admin',
+	host: 'localhost',
+	database: 'laundry',
+	dialect: 'mysql',
+	timezone: '+08:00',
 };

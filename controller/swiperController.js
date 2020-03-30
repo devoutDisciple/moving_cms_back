@@ -36,14 +36,16 @@ router.post('/add', upload.single('file'), (req, res) => {
 	swiperService.add(req, res, filename);
 });
 
+// 删除
+router.post('/delete', (req, res) => {
+	swiperService.delete(req, res);
+});
+
 // 编辑轮播图
 router.post('/update', upload.single('file'), (req, res) => {
 	swiperService.update(req, res, filename);
 });
 
-// 删除
-router.post('/delete', (req, res) => {
-	swiperService.delete(req, res);
-});
+// --------------------------------------
 
 module.exports = router;

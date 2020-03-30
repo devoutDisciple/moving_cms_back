@@ -76,12 +76,10 @@ module.exports = {
 		try {
 			let body = req.body;
 			let params = {
-				type: body.type,
-				campus: body.campus,
+				shop_id: body.shopid,
 				sort: body.sort,
+				create_time: body.create_time,
 			};
-			body.goodsid ? (params.goodsid = body.goodsid) : null;
-			body.shopid ? (params.shopid = body.shopid) : null;
 			filename ? (params.url = preUrl + filename) : null;
 			await SwiperModel.create(params);
 			res.send(resultMessage.success('success'));
@@ -99,12 +97,7 @@ module.exports = {
 	update: async (req, res, filename) => {
 		try {
 			let body = req.body;
-			let params = {
-				type: body.type,
-				sort: body.sort,
-			};
-			body.goodsid ? (params.goodsid = body.goodsid) : null;
-			body.shopid ? (params.shopid = body.shopid) : null;
+			let params = { sort: body.sort };
 			filename ? (params.url = preUrl + filename) : null;
 			await SwiperModel.update(params, {
 				where: {

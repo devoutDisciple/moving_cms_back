@@ -1,10 +1,10 @@
-const resultMessage = require("../util/resultMessage");
-const sequelize = require("../dataSource/MysqlPoolClass");
-const collection = require("../models/collection");
+const resultMessage = require('../util/resultMessage');
+const sequelize = require('../dataSource/MysqlPoolClass');
+const collection = require('../models/collection');
 const collectionModel = collection(sequelize);
-const goods = require("../models/goods");
+const goods = require('../models/goods');
 const GoodsModel = goods(sequelize);
-collectionModel.belongsTo(GoodsModel, { foreignKey: "goods_id", targetKey: "id", as: "goodsDetail",});
+collectionModel.belongsTo(GoodsModel, { foreignKey: 'goods_id', targetKey: 'id', as: 'goodsDetail' });
 
 module.exports = {
 	// 添加收藏
@@ -17,8 +17,8 @@ module.exports = {
 					goods_id: body.goods_id,
 				},
 			});
-			if(originCarItem) {
-				return res.send(resultMessage.success("have one"));
+			if (originCarItem) {
+				return res.send(resultMessage.success('have one'));
 			}
 			await collectionModel.create(body);
 			res.send(resultMessage.success([]));
@@ -33,19 +33,21 @@ module.exports = {
 		try {
 			let car = await collectionModel.findAll({
 				where: {
-					openid: openid
+					openid: openid,
 				},
-				include: [{
-					model: GoodsModel,
-					as: "goodsDetail",
-				}],
+				include: [
+					{
+						model: GoodsModel,
+						as: 'goodsDetail',
+					},
+				],
 				order: [
 					// will return `name`  DESC 降序  ASC 升序
-					["create_time", "DESC"],
-				]
+					['create_time', 'DESC'],
+				],
 			});
 			let result = [];
-			car.map(item => {
+			car.map((item) => {
 				result.push(item.dataValues);
 			});
 			res.send(resultMessage.success(result));
@@ -56,13 +58,14 @@ module.exports = {
 	},
 	// 移除收藏
 	removeCollectionGoods: async (req, res) => {
-		let openid = req.body.openid, goods_id = req.body.goods_id;
+		let openid = req.body.openid,
+			goods_id = req.body.goods_id;
 		try {
 			await collectionModel.destroy({
 				where: {
 					openid: openid,
-					goods_id: goods_id
-				}
+					goods_id: goods_id,
+				},
 			});
 			res.send(resultMessage.success([]));
 		} catch (error) {

@@ -18,9 +18,7 @@ module.exports = {
 		try {
 			let name = req.query.name;
 			let where = {
-				is_delete: {
-					[Op.not]: ['2'],
-				},
+				is_delete: { [Op.not]: ['2'] },
 			};
 			name
 				? (where.name = {

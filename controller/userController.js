@@ -6,6 +6,14 @@ const userService = require('../services/userService');
 router.get('/all', (req, res) => {
 	userService.all(req, res);
 });
+
+// 根据条件筛选用户 getByCondition
+router.get('/getByCondition', (req, res) => {
+	userService.getByCondition(req, res);
+});
+
+// --------------------------
+
 // 用户注册，返回openid
 router.get('/register', (req, res) => {
 	userService.register(req, res);

@@ -1,13 +1,13 @@
-const resultMessage = require("../util/resultMessage");
-const sequelize = require("../dataSource/MysqlPoolClass");
-const evaluate = require("../models/evaluate");
+const resultMessage = require('../util/resultMessage');
+const sequelize = require('../dataSource/MysqlPoolClass');
+const evaluate = require('../models/evaluate');
 const evaluateModel = evaluate(sequelize);
-const goods = require("../models/goods");
+const goods = require('../models/goods');
 const GoodsModel = goods(sequelize);
-evaluateModel.belongsTo(GoodsModel, { foreignKey: "goods_id", targetKey: "id", as: "goodsDetail",});
-const shop = require("../models/shop");
+evaluateModel.belongsTo(GoodsModel, { foreignKey: 'goods_id', targetKey: 'id', as: 'goodsDetail' });
+const shop = require('../models/shop');
 const shopModel = shop(sequelize);
-evaluateModel.belongsTo(shopModel, { foreignKey: "shopid", targetKey: "id", as: "shopDetail",});
+evaluateModel.belongsTo(shopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 
 module.exports = {
 	// 获取所有用户评价
@@ -15,16 +15,16 @@ module.exports = {
 		try {
 			// 获取评价
 			let evaluates = await evaluateModel.findAll({
-				include: [{
-					model: GoodsModel,
-					as: "goodsDetail",
-				}],
-				order: [
-					["create_time", "DESC"],
+				include: [
+					{
+						model: GoodsModel,
+						as: 'goodsDetail',
+					},
 				],
+				order: [['create_time', 'DESC']],
 			});
 			let result = [];
-			evaluates.map(item => {
+			evaluates.map((item) => {
 				result.push({
 					id: item.id,
 					goods_id: item.goods_id,
@@ -34,7 +34,7 @@ module.exports = {
 					desc: item.desc,
 					shop_grade: item.shop_grade,
 					sender_grade: item.sender_grade,
-					create_time: item.create_time
+					create_time: item.create_time,
 				});
 			});
 			res.send(resultMessage.success(result));
@@ -50,19 +50,17 @@ module.exports = {
 			// 获取评价
 			let evaluates = await evaluateModel.findAll({
 				where: {
-					openid: req.query.openid
+					openid: req.query.openid,
 				},
-				order: [
-					["create_time", "DESC"],
-				],
+				order: [['create_time', 'DESC']],
 			});
 			let result = [];
-			evaluates.map(item => {
+			evaluates.map((item) => {
 				result.push({
 					goods_id: item.goods_id,
 					desc: item.desc,
 					goods_grade: item.goods_grade,
-					create_time: item.create_time
+					create_time: item.create_time,
 				});
 			});
 			res.send(resultMessage.success(result));
@@ -79,27 +77,29 @@ module.exports = {
 			// 获取评价
 			let evaluates = await evaluateModel.findAll({
 				where: {
-					goods_id: goods_id
+					goods_id: goods_id,
 				},
 				order: [
 					// will return `name`  DESC 降序  ASC 升序
-					["create_time", "DESC"],
+					['create_time', 'DESC'],
 				],
 			});
 			// 获取评价平均值
-			let sumEvaluate = await evaluateModel.sum("shop_grade", {
+			let sumEvaluate = await evaluateModel.sum('shop_grade', {
 				where: {
-					goods_id: goods_id
-				}
+					goods_id: goods_id,
+				},
 			});
 			let result = [];
-			evaluates.map(item => {
+			evaluates.map((item) => {
 				result.push(item.dataValues);
 			});
-			res.send(resultMessage.success({
-				sumEvaluate,
-				result
-			}));
+			res.send(
+				resultMessage.success({
+					sumEvaluate,
+					result,
+				}),
+			);
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));
@@ -113,19 +113,21 @@ module.exports = {
 			// 获取评价
 			let evaluates = await evaluateModel.findAll({
 				where: {
-					shopid: shopid
+					shopid: shopid,
 				},
-				include: [{
-					model: GoodsModel,
-					as: "goodsDetail",
-				}],
+				include: [
+					{
+						model: GoodsModel,
+						as: 'goodsDetail',
+					},
+				],
 				order: [
 					// will return `name`  DESC 降序  ASC 升序
-					["create_time", "DESC"],
+					['create_time', 'DESC'],
 				],
 			});
 			let result = [];
-			evaluates.map(item => {
+			evaluates.map((item) => {
 				result.push({
 					id: item.id,
 					goods_id: item.goods_id,
@@ -152,28 +154,31 @@ module.exports = {
 		try {
 			// 获取评价
 			let evaluates = await evaluateModel.findAll({
-				include: [{
-					model: GoodsModel,
-					as: "goodsDetail",
-				}, {
-					model: shopModel,
-					as: "shopDetail",
-				}],
+				include: [
+					{
+						model: GoodsModel,
+						as: 'goodsDetail',
+					},
+					{
+						model: shopModel,
+						as: 'shopDetail',
+					},
+				],
 				order: [
 					// will return `name`  DESC 降序  ASC 升序
-					["create_time", "DESC"],
+					['create_time', 'DESC'],
 				],
 			});
 			let result = [];
-			evaluates.map(item => {
-				if(item.shopDetail && item.shopDetail.campus == req.query.position) {
+			evaluates.map((item) => {
+				if (item.shopDetail && item.shopDetail.campus == req.query.position) {
 					result.push({
 						id: item.id,
 						goods_id: item.goods_id,
 						shopName: item.shopDetail ? item.shopDetail.name : null,
 						shopid: item.shopid,
 						goods_grade: item.goods_grade,
-						goodsName: item.goodsDetail ? item.goodsDetail.name : "",
+						goodsName: item.goodsDetail ? item.goodsDetail.name : '',
 						orderid: item.orderid,
 						username: item.username,
 						avatarUrl: item.avatarUrl,
@@ -195,31 +200,34 @@ module.exports = {
 			// 获取评价
 			let evaluates = await evaluateModel.findAll({
 				where: {
-					orderid: req.query.id
+					orderid: req.query.id,
 				},
-				include: [{
-					model: GoodsModel,
-					as: "goodsDetail",
-				}, {
-					model: shopModel,
-					as: "shopDetail",
-				}],
+				include: [
+					{
+						model: GoodsModel,
+						as: 'goodsDetail',
+					},
+					{
+						model: shopModel,
+						as: 'shopDetail',
+					},
+				],
 				order: [
 					// will return `name`  DESC 降序  ASC 升序
-					["create_time", "DESC"],
+					['create_time', 'DESC'],
 				],
 			});
 			let result = [];
-			evaluates.map(item => {
+			evaluates.map((item) => {
 				result.push({
 					id: item.id,
 					goods_id: item.goods_id,
 					d: item.goods_grade,
-					goodsName: item.goodsDetail ? item.goodsDetail.name : "",
-					goodsUrl: item.goodsDetail ? item.goodsDetail.url : "",
+					goodsName: item.goodsDetail ? item.goodsDetail.name : '',
+					goodsUrl: item.goodsDetail ? item.goodsDetail.url : '',
 					desc: item.desc,
 					create_time: item.create_time,
-					show: item.show
+					show: item.show,
 				});
 			});
 			res.send(resultMessage.success(result));
@@ -228,5 +236,4 @@ module.exports = {
 			return res.send(resultMessage.error([]));
 		}
 	},
-
 };

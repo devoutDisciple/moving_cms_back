@@ -1,12 +1,12 @@
-const resultMessage = require("../util/resultMessage");
-const sequelize = require("../dataSource/MysqlPoolClass");
-const Sequelize = require("sequelize");
+const resultMessage = require('../util/resultMessage');
+const sequelize = require('../dataSource/MysqlPoolClass');
+const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-const user = require("../models/user");
+const user = require('../models/user');
 const userModel = user(sequelize);
-const order = require("../models/order");
+const order = require('../models/order');
 const orderModel = order(sequelize);
-const shop = require("../models/shop");
+const shop = require('../models/shop');
 const shopModel = shop(sequelize);
 
 module.exports = {
@@ -17,37 +17,39 @@ module.exports = {
 			let users = await userModel.count({
 				where: {
 					is_delete: {
-						[Op.not]: ["2"]
+						[Op.not]: ['2'],
 					},
-				}
+				},
 			});
 			let orders = await orderModel.count({
 				where: {
 					is_delete: {
-						[Op.not]: ["2"]
+						[Op.not]: ['2'],
 					},
-				}
+				},
 			});
-			let orderMoney = await orderModel.sum("total_price" ,{
+			let orderMoney = await orderModel.sum('total_price', {
 				where: {
 					is_delete: {
-						[Op.not]: ["2"]
+						[Op.not]: ['2'],
 					},
-				}
+				},
 			});
 			let shops = await shopModel.count({
 				where: {
 					is_delete: {
-						[Op.not]: ["2"]
+						[Op.not]: ['2'],
 					},
-				}
+				},
 			});
-			res.send(resultMessage.success({
-				userNum: users,
-				orders: orders,
-				orderMoney: orderMoney,
-				shops: shops
-			}));
+			res.send(
+				resultMessage.success({
+					userNum: users,
+					orders: orders,
+					orderMoney: orderMoney,
+					shops: shops,
+				}),
+			);
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error({}));
@@ -62,16 +64,15 @@ module.exports = {
 			// 	res.send(resultMessage.success(users));
 			// select * from `user` where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(create_time);
 			// select * from `user` where DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= date(create_time);
-			sequelize.query("SELECT * FROM `user` where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(create_time);", { type: sequelize.QueryTypes.SELECT})
-				.then(function(users) {
+			sequelize
+				.query('SELECT * FROM `user` where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(create_time);', { type: sequelize.QueryTypes.SELECT })
+				.then(function (users) {
 					// 并不需要在这spread 展开结果，因为所返回的只有所查询的结果
 					res.send(resultMessage.success(users));
 				});
-
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error({}));
 		}
 	},
-
 };

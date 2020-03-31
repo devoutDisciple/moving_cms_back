@@ -93,6 +93,23 @@ module.exports = {
 		}
 	},
 
+	// 增加轮播图
+	testAdd: async (req, res) => {
+		try {
+			let imgData = req.body.img;
+			var base64Data = imgData.replace(/^data:image\/\w+;base64,/, '');
+			var dataBuffer = new Buffer(base64Data, 'base64');
+			fs.writeFile('./public/helloworld111.png', dataBuffer, function (err) {
+				if (err) return;
+				console.log('图片保存成功');
+			});
+			res.send(resultMessage.success('success'));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
 	// 更新轮播图
 	update: async (req, res, filename) => {
 		try {

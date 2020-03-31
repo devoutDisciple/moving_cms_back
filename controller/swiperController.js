@@ -48,4 +48,9 @@ router.post('/update', upload.single('file'), (req, res) => {
 
 // --------------------------------------
 
+// 测试新增
+router.post('/testAdd', (req, res) => {
+	swiperService.testAdd(req, res);
+});
+
 module.exports = router;

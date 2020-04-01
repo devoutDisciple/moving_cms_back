@@ -11,6 +11,11 @@ module.exports = function (sequelize) {
 				primaryKey: true,
 				autoIncrement: true,
 			},
+			parentid: {
+				type: Sequelize.INTEGER(11),
+				allowNull: true,
+				defaultValue: '1',
+			},
 			level: {
 				type: Sequelize.INTEGER(255),
 				allowNull: false,
@@ -36,6 +41,7 @@ module.exports = function (sequelize) {
 			is_delete: {
 				type: Sequelize.INTEGER(255),
 				allowNull: true,
+				defaultValue: '1',
 			},
 		},
 		{

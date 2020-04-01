@@ -1,10 +1,9 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const optionService = require("../services/optionService");
+const optionService = require('../services/optionService');
 
-router.get("/all", (req, res) => {
+router.get('/all', (req, res) => {
 	optionService.all(req, res);
 });
-
 
 module.exports = router;

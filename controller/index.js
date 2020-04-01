@@ -16,6 +16,7 @@ const adverController = require('./adverController');
 const rateCountroller = require('./rateCountroller');
 const printController = require('./printController');
 const optionController = require('./optionController');
+const areaController = require('./areaController');
 
 const router = (app) => {
 	// 商店相关
@@ -28,6 +29,8 @@ const router = (app) => {
 	app.use('/order', orderController);
 	// 快递柜相关
 	app.use('/cabinet', cabinetController);
+	// 区域相关
+	app.use('/area', areaController);
 
 	// 数据汇总
 	app.use('/count', countController);

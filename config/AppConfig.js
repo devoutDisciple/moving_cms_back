@@ -8,7 +8,9 @@ module.exports = {
 	// 本地环境
 	goodsImgFilePath: '/Users/zhangzhen/moving/cms_back/public', // 商品描述图片
 	swiperImgFilePath: '/Users/zhangzhen/moving/cms_back/public/lunbo', // swiper图片
+	intergralImgFilePath: '/Users/zhangzhen/moving/cms_back/public/intergral', // swiper图片
 	swiperPreUrl: 'lunbo/',
+	intergralPreUrl: 'intergral/',
 	goodsPreUrl: 'goods/',
 
 	// 打印机设置

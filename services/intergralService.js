@@ -2,22 +2,22 @@ const resultMessage = require('../util/resultMessage');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const sequelize = require('../dataSource/MysqlPoolClass');
-const swiper = require('../models/swiper');
-const SwiperModel = swiper(sequelize);
+const intergral = require('../models/intergral');
+const intergralModel = intergral(sequelize);
 const responseUtil = require('../util/responseUtil');
 const shop = require('../models/shop');
-const shopModel = shop(sequelize);
 const AppConfig = require('../config/AppConfig');
-let preUrl = AppConfig.swiperPreUrl;
+let preUrl = AppConfig.intergralPreUrl;
 const fs = require('fs');
-let filePath = AppConfig.swiperImgFilePath;
+let filePath = AppConfig.intergralImgFilePath;
 const ImageDeal = require('../util/ImagesDeal');
-SwiperModel.belongsTo(shopModel, { foreignKey: 'shop_id', targetKey: 'id', as: 'shopDetail' });
+const shopModel = shop(sequelize);
+intergralModel.belongsTo(shopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 
 module.exports = {
 	getAll: async (req, res) => {
 		try {
-			let swiper = await SwiperModel.findAll({
+			let swiper = await intergralModel.findAll({
 				where: {
 					is_delete: {
 						[Op.not]: ['2'],
@@ -31,7 +31,7 @@ module.exports = {
 				],
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shop_id', 'url', 'sort', 'create_time']);
+			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'name', 'desc', 'url', 'intergral', 'sort', 'create_time']);
 			result.forEach((item, index) => {
 				item.shopName = swiper[index]['shopDetail']['name'] || '';
 			});
@@ -51,7 +51,7 @@ module.exports = {
 				},
 			};
 			shopid && shopid != -1 ? (where.shop_id = shopid) : null;
-			let swiper = await SwiperModel.findAll({
+			let swiper = await intergralModel.findAll({
 				where: where,
 				include: [
 					{
@@ -61,7 +61,7 @@ module.exports = {
 				],
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shop_id', 'url', 'sort', 'create_time']);
+			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'name', 'desc', 'url', 'intergral', 'sort', 'create_time']);
 			result.forEach((item, index) => {
 				item.shopName = swiper[index]['shopDetail']['name'] || '';
 			});
@@ -72,17 +72,20 @@ module.exports = {
 		}
 	},
 
-	// 增加轮播图
+	// 增加积分列表
 	add: async (req, res, filename) => {
 		try {
 			let body = req.body;
 			let params = {
-				shop_id: body.shopid,
+				shopid: body.shopid,
+				name: body.name,
+				intergral: body.intergral,
+				desc: body.desc,
 				sort: body.sort,
 				create_time: body.create_time,
 			};
 			filename ? (params.url = preUrl + filename) : null;
-			await SwiperModel.create(params);
+			await intergralModel.create(params);
 			res.send(resultMessage.success('success'));
 			ImageDeal.dealImages(`${filePath}/${filename}`);
 		} catch (error) {
@@ -98,9 +101,15 @@ module.exports = {
 	update: async (req, res, filename) => {
 		try {
 			let body = req.body;
-			let params = { sort: body.sort };
+			let params = {
+				shopid: body.shopid,
+				name: body.name,
+				intergral: body.intergral,
+				desc: body.desc,
+				sort: body.sort,
+			};
 			filename ? (params.url = preUrl + filename) : null;
-			await SwiperModel.update(params, {
+			await intergralModel.update(params, {
 				where: {
 					id: body.id,
 				},
@@ -118,7 +127,7 @@ module.exports = {
 
 	delete: async (req, res) => {
 		try {
-			await SwiperModel.destroy({
+			await intergralModel.destroy({
 				where: {
 					id: req.body.id,
 				},

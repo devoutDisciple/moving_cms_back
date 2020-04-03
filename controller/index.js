@@ -17,6 +17,7 @@ const rateCountroller = require('./rateCountroller');
 const printController = require('./printController');
 const optionController = require('./optionController');
 const areaController = require('./areaController');
+const intergralController = require('./intergralController');
 
 const router = (app) => {
 	// 商店相关
@@ -31,6 +32,8 @@ const router = (app) => {
 	app.use('/cabinet', cabinetController);
 	// 区域相关
 	app.use('/area', areaController);
+	// 积分兑换管理
+	app.use('/intergral', intergralController);
 
 	// 数据汇总
 	app.use('/count', countController);

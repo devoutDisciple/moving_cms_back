@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const swiperService = require('../services/swiperService');
 const multer = require('multer');
+const intergralService = require('../services/intergralService');
 const ObjectUtil = require('../util/ObjectUtil');
 let AppConfig = require('../config/AppConfig');
-let filePath = AppConfig.swiperImgFilePath;
+let filePath = AppConfig.intergralImgFilePath;
 
 let filename = '';
 // 使用硬盘存储模式设置存放接收到的文件的路径以及文件名
@@ -15,35 +15,35 @@ var storage = multer.diskStorage({
 	},
 	filename: function (req, file, cb) {
 		// 将保存文件名设置为 随机字符串 + 时间戳名，比如 JFSDJF323423-1342342323.jpg
-		filename = 'swiper_' + ObjectUtil.getName() + '_' + Date.now() + '.jpg';
+		filename = 'intergral_' + ObjectUtil.getName() + '_' + Date.now() + '.jpg';
 		cb(null, filename);
 	},
 });
 let upload = multer({ dest: filePath, storage: storage });
 
-// 获取所有轮播图的list /swiper/all
+// 获取所有积分的list /swiper/all
 router.get('/getAll', (req, res) => {
-	swiperService.getAll(req, res);
+	intergralService.getAll(req, res);
 });
 
-// 根据商店id获取轮播图 getByShopId
+// 根据商店id获取积分数据 getByShopId
 router.get('/getByShopId', (req, res) => {
-	swiperService.getByShopId(req, res);
+	intergralService.getByShopId(req, res);
 });
 
-// 新增轮播图
+// 新增积分图
 router.post('/add', upload.single('file'), (req, res) => {
-	swiperService.add(req, res, filename);
+	intergralService.add(req, res, filename);
 });
 
 // 删除
 router.post('/delete', (req, res) => {
-	swiperService.delete(req, res);
+	intergralService.delete(req, res);
 });
 
-// 编辑轮播图
+// 编辑轮积分
 router.post('/update', upload.single('file'), (req, res) => {
-	swiperService.update(req, res, filename);
+	intergralService.update(req, res, filename);
 });
 
 module.exports = router;

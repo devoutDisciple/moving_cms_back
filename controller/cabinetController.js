@@ -21,11 +21,6 @@ var storage = multer.diskStorage({
 });
 let upload = multer({ dest: filePath, storage: storage });
 
-// 获取所有快递柜
-router.get('/getAll', (req, res) => {
-	cabinetService.getAll(req, res);
-});
-
 // 新增快递柜
 router.post('/add', upload.single('file'), (req, res) => {
 	cabinetService.add(req, res, filename);

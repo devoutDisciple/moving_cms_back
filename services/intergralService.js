@@ -15,33 +15,7 @@ const shopModel = shop(sequelize);
 intergralModel.belongsTo(shopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 
 module.exports = {
-	getAll: async (req, res) => {
-		try {
-			let swiper = await intergralModel.findAll({
-				where: {
-					is_delete: {
-						[Op.not]: ['2'],
-					},
-				},
-				include: [
-					{
-						model: shopModel,
-						as: 'shopDetail',
-					},
-				],
-				order: [['sort', 'DESC']],
-			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'name', 'desc', 'url', 'intergral', 'sort', 'create_time']);
-			result.forEach((item, index) => {
-				item.shopName = swiper[index]['shopDetail']['name'] || '';
-			});
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
+	// 根据商店id获取积分列表
 	getByShopId: async (req, res) => {
 		try {
 			let shopid = req.query.shopid;
@@ -97,7 +71,7 @@ module.exports = {
 		}
 	},
 
-	// 更新轮播图
+	// 更新
 	update: async (req, res, filename) => {
 		try {
 			let body = req.body;

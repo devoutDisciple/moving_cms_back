@@ -15,33 +15,6 @@ const ImageDeal = require('../util/ImagesDeal');
 SwiperModel.belongsTo(shopModel, { foreignKey: 'shop_id', targetKey: 'id', as: 'shopDetail' });
 
 module.exports = {
-	getAll: async (req, res) => {
-		try {
-			let swiper = await SwiperModel.findAll({
-				where: {
-					is_delete: {
-						[Op.not]: ['2'],
-					},
-				},
-				include: [
-					{
-						model: shopModel,
-						as: 'shopDetail',
-					},
-				],
-				order: [['sort', 'DESC']],
-			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shop_id', 'url', 'sort', 'create_time']);
-			result.forEach((item, index) => {
-				item.shopName = swiper[index]['shopDetail']['name'] || '';
-			});
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
 	getByShopId: async (req, res) => {
 		try {
 			let shopid = req.query.shopid;

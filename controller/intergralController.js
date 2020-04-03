@@ -21,11 +21,6 @@ var storage = multer.diskStorage({
 });
 let upload = multer({ dest: filePath, storage: storage });
 
-// 获取所有积分的list /swiper/all
-router.get('/getAll', (req, res) => {
-	intergralService.getAll(req, res);
-});
-
 // 根据商店id获取积分数据 getByShopId
 router.get('/getByShopId', (req, res) => {
 	intergralService.getByShopId(req, res);

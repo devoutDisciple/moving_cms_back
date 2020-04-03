@@ -14,30 +14,14 @@ const filePath = AppConfig.swiperImgFilePath;
 const responseUtil = require('../util/responseUtil');
 
 module.exports = {
-	// 获取所有快递柜子
-	getAll: async (req, res) => {
-		// let {} = req.query;
-		try {
-			let Cabinets = await CabinetModel.findAll({
-				where: {},
-				order: [['sort', 'DESC']],
-			});
-			let result = responseUtil.renderFieldsAll(Cabinets, ['id', 'shopid', 'name', 'address', 'url', 'sort', 'create_time']);
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
 	// 根据商店ip获取快递柜
 	getByShopId: async (req, res) => {
 		try {
 			let { shopid } = req.query;
+			let where = {};
+			shopid && shopid != -1 ? (where.shopid = shopid) : null;
 			let swiper = await CabinetModel.findAll({
-				where: {
-					shopid: shopid,
-				},
+				where: where,
 				include: [
 					{
 						model: ShopModel,

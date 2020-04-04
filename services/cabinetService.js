@@ -8,7 +8,7 @@ const ShopModel = shop(sequelize);
 // ShopModel.belongsTo(CabinetModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 CabinetModel.belongsTo(ShopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 const AppConfig = require('../config/AppConfig');
-const preUrl = AppConfig.swiperPreUrl;
+const preUrl = AppConfig.cabinetPresUrl;
 const ImageDeal = require('../util/ImagesDeal');
 const filePath = AppConfig.swiperImgFilePath;
 const responseUtil = require('../util/responseUtil');

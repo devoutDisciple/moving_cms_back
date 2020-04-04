@@ -4,7 +4,7 @@ const cabinetService = require('../services/cabinetService');
 const multer = require('multer');
 const ObjectUtil = require('../util/ObjectUtil');
 let AppConfig = require('../config/AppConfig');
-let filePath = AppConfig.swiperImgFilePath;
+let filePath = AppConfig.cabinetImgFilePath;
 
 let filename = '';
 // 使用硬盘存储模式设置存放接收到的文件的路径以及文件名

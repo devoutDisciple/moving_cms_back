@@ -11,13 +11,22 @@ module.exports = function (sequelize) {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			openid: {
-				type: Sequelize.STRING(255),
+			userid: {
+				type: Sequelize.INTEGER(11),
+				allowNull: false,
+			},
+			option: {
+				type: Sequelize.STRING(800),
 				allowNull: true,
 			},
-			text: {
-				type: Sequelize.STRING(8000),
+			desc: {
+				type: Sequelize.STRING(800),
 				allowNull: true,
+			},
+			status: {
+				type: Sequelize.INTEGER(11),
+				allowNull: false,
+				defaultValue: '1',
 			},
 			create_time: {
 				type: Sequelize.DATE,

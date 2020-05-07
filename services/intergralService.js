@@ -82,7 +82,7 @@ module.exports = {
 				desc: body.desc,
 				sort: body.sort,
 			};
-			filename ? (params.url = preUrl + filename) : null;
+			filename && body.update != 'no' ? (params.url = preUrl + filename) : null;
 			await intergralModel.update(params, {
 				where: {
 					id: body.id,

@@ -7,35 +7,35 @@ module.exports = {
 		return {
 			code: 200,
 			success: true,
-			data: data
+			data: data,
 		};
 	},
 	error: (err) => {
 		return {
 			code: 500,
 			success: false,
-			message: err.message
+			message: err.message,
 		};
 	},
 	errorMsg: (data) => {
 		return {
 			code: 400,
 			success: false,
-			message: data
+			message: data,
 		};
 	},
 	loginError: (data) => {
 		return {
 			code: 401,
 			success: false,
-			message: data || "请重新登录!"
+			message: data || '请重新登录!',
 		};
 	},
 	specilError: (code, data) => {
 		return {
 			code: code,
 			success: false,
-			message: data
+			message: data,
 		};
-	}
+	},
 };

@@ -18,6 +18,7 @@ const printController = require('./printController');
 const optionController = require('./optionController');
 const areaController = require('./areaController');
 const intergralController = require('./intergralController');
+const testController = require('./testController');
 
 const router = (app) => {
 	// 商店相关
@@ -61,5 +62,8 @@ const router = (app) => {
 	app.use('/print', printController);
 	// 意见反馈
 	app.use('/option', optionController);
+
+	// 测试相关
+	app.use('/test', testController);
 };
 module.exports = router;

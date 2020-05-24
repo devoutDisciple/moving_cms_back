@@ -44,7 +44,7 @@ app.all('*', (req, res, next) => {
 });
 
 // 判断用户是否登录
-app.use(loginMiddleware);
+// app.use(loginMiddleware);
 
 // 路由 controller层
 controller(app);

@@ -1,6 +1,7 @@
 const resultMessage = require('../util/resultMessage');
 const sequelize = require('../dataSource/MysqlPoolClass');
 const Sequelize = require('sequelize');
+const responseUtil = require('../util/responseUtil');
 const Op = Sequelize.Op;
 const user = require('../models/user');
 const UserModel = user(sequelize);
@@ -12,7 +13,8 @@ module.exports = {
 			let list = await UserModel.findAll({
 				order: [['create_time', 'DESC']],
 			});
-			res.send(resultMessage.success(list));
+			let result = responseUtil.renderFieldsAll(list, ['id', 'photo', 'nickname', 'username', 'phone', 'member', 'balance', 'integral', 'create_time']);
+			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));

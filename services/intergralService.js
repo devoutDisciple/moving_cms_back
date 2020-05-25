@@ -24,7 +24,7 @@ module.exports = {
 					[Op.not]: ['2'],
 				},
 			};
-			shopid && shopid != -1 ? (where.shop_id = shopid) : null;
+			shopid && shopid != -1 ? (where.shopid = shopid) : null;
 			let swiper = await intergralModel.findAll({
 				where: where,
 				include: [

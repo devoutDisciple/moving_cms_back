@@ -10,7 +10,7 @@ CabinetModel.belongsTo(ShopModel, { foreignKey: 'shopid', targetKey: 'id', as: '
 const AppConfig = require('../config/AppConfig');
 const preUrl = AppConfig.cabinetPresUrl;
 const ImageDeal = require('../util/ImagesDeal');
-const filePath = AppConfig.swiperImgFilePath;
+const filePath = AppConfig.cabinetImgFilePath;
 const responseUtil = require('../util/responseUtil');
 
 module.exports = {

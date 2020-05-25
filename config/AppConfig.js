@@ -10,7 +10,7 @@ module.exports = {
 	goodsImgFilePath: '/Users/zhangzhen/moving/cms_back/public/goods', // 商品描述图片
 	swiperImgFilePath: '/Users/zhangzhen/moving/cms_back/public/swiper', // swiper图片
 	intergralImgFilePath: '/Users/zhangzhen/moving/cms_back/public/intergral', // 积分图片
-	cabinetImgFilePath: '/Users/zhangzhen/moving/cms_back/public/intergral', // 快递柜图片
+	cabinetImgFilePath: '/Users/zhangzhen/moving/cms_back/public/cabinet', // 快递柜图片
 	userImgFilePath: '/Users/zhangzhen/moving/cms_back/public/user', // 用户头像
 
 	// 固定的地址

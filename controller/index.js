@@ -18,6 +18,8 @@ const printController = require('./printController');
 const optionController = require('./optionController');
 const areaController = require('./areaController');
 const intergralController = require('./intergralController');
+const clothingController = require('./clothingController');
+
 const testController = require('./testController');
 
 const router = (app) => {
@@ -35,6 +37,8 @@ const router = (app) => {
 	app.use('/area', areaController);
 	// 积分兑换管理
 	app.use('/intergral', intergralController);
+	// 商店衣物
+	app.use('/clothing', clothingController);
 
 	// 数据汇总
 	app.use('/count', countController);

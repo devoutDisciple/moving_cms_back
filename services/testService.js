@@ -63,10 +63,10 @@ module.exports = {
 			const params = {
 				mtype: 'laundry',
 				boxid: 'xiyiguitest001',
-				mtoken: '79ace0a740e443fc8593605bd3152a1c',
+				mtoken: 'a884f26a48a14da3a43cad49179c38a6',
 				time: moment().format('YYYY-MM-DD HH:mm:ss'),
 				skey: 'Smartbox',
-				cellid: '101',
+				cellid: '119',
 			};
 			const str = md5(params.boxid + params.cellid + params.time + params.skey).toLowerCase();
 			params.sign = str;
@@ -75,7 +75,7 @@ module.exports = {
 					url: url,
 					method: 'POST',
 					headers: params,
-					form: { boxid: 'xiyiguitest001', cellid: '101' },
+					form: { boxid: 'xiyiguitest001', cellid: '119' },
 				},
 				function (error, response, body) {
 					console.log(body);

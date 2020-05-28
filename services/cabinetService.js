@@ -30,7 +30,7 @@ module.exports = {
 				],
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'name', 'address', 'url', 'sort', 'create_time']);
+			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'boxid', 'name', 'address', 'url', 'sort', 'create_time']);
 			result.forEach((item, index) => {
 				item.shopName = swiper[index]['shopDetail']['name'] || '';
 			});
@@ -49,6 +49,7 @@ module.exports = {
 				shopid: body.shopid,
 				name: body.name,
 				sort: body.sort,
+				boxid: body.boxid,
 				address: body.address,
 				create_time: body.create_time,
 			};
@@ -83,8 +84,8 @@ module.exports = {
 	// 更新柜子
 	update: async (req, res, filename) => {
 		try {
-			let { id, sort, name, address } = req.body;
-			let params = { sort, name, address };
+			let { id, sort, name, address, boxid } = req.body;
+			let params = { sort, name, address, boxid };
 			filename ? (params.url = preUrl + filename) : null;
 			await CabinetModel.update(params, {
 				where: {

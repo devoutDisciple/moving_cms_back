@@ -7,9 +7,14 @@ router.get('/login', (req, res) => {
 	testService.login(req, res);
 });
 
-// getState
+// 获取格口状态
 router.get('/getState', (req, res) => {
 	testService.getState(req, res);
+});
+
+// 开启格口
+router.get('/open', (req, res) => {
+	testService.open(req, res);
 });
 
 module.exports = router;

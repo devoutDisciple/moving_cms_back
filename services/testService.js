@@ -24,24 +24,58 @@ module.exports = {
 			return res.send(resultMessage.error([]));
 		}
 	},
+
 	// 查看柜体状态
 	getState: async (req, res) => {
 		try {
-			const url = 'http://boxserver.zmkmdz.com/box/getboxinfo';
-			const parmas = {
-				mtype: 'ipc',
+			const url = 'http://boxserver.zmkmdz.com/box/laundry/getbox_freecell';
+			const params = {
+				mtype: 'laundry',
 				boxid: 'xiyiguitest001',
-				mtoken: 'f54605cb5ef64880b958f002dc37b487',
-				time: moment().format('yyyy-MM-dd HH:mm:ss'),
+				mtoken: '79ace0a740e443fc8593605bd3152a1c',
+				time: moment().format('YYYY-MM-DD HH:mm:ss'),
+				skey: 'Smartbox',
 			};
-			const str = md5(parmas.mtype + parmas.boxid + parmas.mtoken + parmas.time).toLowerCase();
-			parmas.sign = str;
+			const str = md5(params.boxid + params.time + params.skey).toLowerCase();
+			params.sign = str;
 			request(
 				{
 					url: url,
 					method: 'POST',
-					headers: parmas,
+					headers: params,
 					form: { boxid: 'xiyiguitest001' },
+				},
+				function (error, response, body) {
+					console.log(body);
+					res.send(resultMessage.success(body));
+				},
+			);
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 开启格口
+	open: async (req, res) => {
+		try {
+			const url = 'http://boxserver.zmkmdz.com/box/laundry/open_box_cell';
+			const params = {
+				mtype: 'laundry',
+				boxid: 'xiyiguitest001',
+				mtoken: '79ace0a740e443fc8593605bd3152a1c',
+				time: moment().format('YYYY-MM-DD HH:mm:ss'),
+				skey: 'Smartbox',
+				cellid: '101',
+			};
+			const str = md5(params.boxid + params.cellid + params.time + params.skey).toLowerCase();
+			params.sign = str;
+			request(
+				{
+					url: url,
+					method: 'POST',
+					headers: params,
+					form: { boxid: 'xiyiguitest001', cellid: '101' },
 				},
 				function (error, response, body) {
 					console.log(body);

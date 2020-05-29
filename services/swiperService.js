@@ -36,7 +36,7 @@ module.exports = {
 			});
 			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shop_id', 'url', 'sort', 'create_time']);
 			result.forEach((item, index) => {
-				item.shopName = swiper[index]['shopDetail']['name'] || '';
+				item.shopName = swiper[index]['shopDetail'] ? swiper[index]['shopDetail']['name'] || '' : '';
 			});
 			res.send(resultMessage.success(result));
 		} catch (error) {

@@ -15,54 +15,33 @@ module.exports = function (sequelize) {
 				type: Sequelize.STRING(255),
 				allowNull: true,
 			},
-			shop_id: {
-				type: Sequelize.INTEGER(11),
-				allowNull: false,
-			},
-			type: {
-				type: Sequelize.INTEGER(11),
-				allowNull: false,
-				defaultValue: '1',
-			},
-			account: {
+			userid: {
 				type: Sequelize.STRING(255),
 				allowNull: false,
 			},
-			name: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
-			phone: {
+			orderid: {
 				type: Sequelize.STRING(255),
 				allowNull: true,
 			},
 			money: {
 				type: Sequelize.STRING(255),
 				allowNull: false,
+				defaultValue: '0',
 			},
-			our_money: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
-			other_money: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
-			real_money: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
-			status: {
+			is_add: {
 				type: Sequelize.INTEGER(11),
 				allowNull: true,
 				defaultValue: '1',
 			},
-			create_time: {
-				type: Sequelize.DATE,
-				allowNull: false,
-				defaultValue: 'CURRENT_TIMESTAMP(6)',
+			pay_type: {
+				type: Sequelize.INTEGER(11),
+				allowNull: true,
 			},
-			modify_time: {
+			method: {
+				type: Sequelize.STRING(255),
+				allowNull: true,
+			},
+			create_time: {
 				type: Sequelize.DATE,
 				allowNull: true,
 			},

@@ -84,9 +84,11 @@ module.exports = {
 	// 更新柜子
 	update: async (req, res, filename) => {
 		try {
-			let { id, sort, name, address, boxid } = req.body;
+			let { id, sort, name, address, boxid, nopicture } = req.body;
 			let params = { sort, name, address, boxid };
-			filename ? (params.url = preUrl + filename) : null;
+			if (!nopicture) {
+				filename ? (params.url = preUrl + filename) : null;
+			}
 			await CabinetModel.update(params, {
 				where: {
 					id: id,

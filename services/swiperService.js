@@ -72,7 +72,9 @@ module.exports = {
 		try {
 			let body = req.body;
 			let params = { sort: body.sort };
-			filename ? (params.url = preUrl + filename) : null;
+			if (!body.nopicture) {
+				filename ? (params.url = preUrl + filename) : null;
+			}
 			await SwiperModel.update(params, {
 				where: {
 					id: body.id,

@@ -9,6 +9,7 @@ const controller = require('./controller/index');
 const path = require('path');
 const loginMiddleware = require('./middleware/loginMiddleware');
 const config = require('./config/AppConfig');
+const Env = require('./config/Env');
 
 // 解析cookie和session还有body
 app.use(cookieParser(config.cookieSign)); // 挂载中间件，可以理解为实例化
@@ -21,7 +22,7 @@ app.use(
 		name: 'session_id', // 在浏览器中生成cookie的名称key，默认是connect.sid
 	}),
 );
-app.use(express.static(path.join(__dirname, './public')));
+app.use(express.static(Env.env ? '/root/asserts' : path.join(__dirname, './public')));
 // parse application/json
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
@@ -49,12 +50,7 @@ app.use(loginMiddleware);
 // 路由 controller层
 controller(app);
 
-// // 监听3001端口  线上
-app.listen(80, () => {
-	console.log(chalk.yellow('server is listenning 80'));
-});
-
-// 监听3001端口  本地
-app.listen(3002, () => {
-	console.log(chalk.yellow('server is listenning 3002'));
+// 监听3003端口  线上
+app.listen(3003, () => {
+	console.log(chalk.yellow('server is listenning 3003'));
 });

@@ -6,6 +6,10 @@ const accoutController = require('./accoutController');
 const areaController = require('./areaController');
 const intergralController = require('./intergralController');
 const clothingController = require('./clothingController');
+const userController = require('./userController');
+const addressController = require('./addressController');
+const billController = require('./billController');
+const optionController = require('./optionController');
 
 const testController = require('./testController');
 
@@ -26,6 +30,14 @@ const router = (app) => {
 	app.use('/intergral', intergralController);
 	// 商店衣物
 	app.use('/clothing', clothingController);
+	// 会员相关
+	app.use('/user', userController);
+	// 地址相关
+	app.use('/address', addressController);
+	// 消费记录相关
+	app.use('/bill', billController);
+	// 意见反馈相关 optionController
+	app.use('/option', optionController);
 
 	// 测试相关
 	app.use('/test', testController);

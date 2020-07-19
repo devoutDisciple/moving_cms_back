@@ -23,6 +23,7 @@ app.use(
 	}),
 );
 app.use(express.static(Env.env ? '/root/asserts' : path.join(__dirname, './public')));
+app.use('/moving', express.static(path.join(__dirname, './public')));
 // parse application/json
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
@@ -50,7 +51,7 @@ app.use(loginMiddleware);
 // 路由 controller层
 controller(app);
 
-// 监听3003端口  线上
-app.listen(3003, () => {
-	console.log(chalk.yellow('server is listenning 3003'));
+// 监听8080端口  线上
+app.listen(8080, () => {
+	console.log(chalk.yellow('server is listenning 8080'));
 });

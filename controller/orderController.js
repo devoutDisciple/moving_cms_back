@@ -7,4 +7,9 @@ router.get('/getAll', (req, res) => {
 	orderService.getAll(req, res);
 });
 
+// 订单数据汇总 getDataNum
+router.get('/getDataNum', (req, res) => {
+	orderService.getDataNum(req, res);
+});
+
 module.exports = router;

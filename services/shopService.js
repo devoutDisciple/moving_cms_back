@@ -59,7 +59,6 @@ module.exports = {
 	updateShopSite: async (req, res) => {
 		try {
 			let { shopid, longitude, latitude, address } = req.body;
-			console.log(shopid, longitude, latitude, address);
 			await ShopModel.update(
 				{ longitude, latitude, address },
 				{
@@ -213,10 +212,8 @@ module.exports = {
 			request.get(
 				`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${AppConfig.appid}&secret=${AppConfig.AppSecret}`,
 				function (error, response, body) {
-					console.log(body, 111);
 					body = JSON.parse(body);
 					let access_token = body.access_token;
-					console.log(access_token);
 					let params = `/pages/shop/shop?id=${shopid}`;
 					// 获取二维码
 					request(
@@ -232,7 +229,6 @@ module.exports = {
 							},
 						},
 						function () {
-							console.log(name, 22);
 							return res.send(resultMessage.success(`http://www.bws666.com/${name}.png`));
 						},
 					).pipe(fs.createWriteStream(`${appConfig.swiperImgFilePath}/${name}.png`));

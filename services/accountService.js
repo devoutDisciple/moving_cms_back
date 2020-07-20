@@ -38,13 +38,11 @@ module.exports = {
 				signed: true,
 				httpOnly: true,
 			}); //signed 表示对cookie加密
-			let campus = user.shopDetail ? user.shopDetail.campus : '';
 			res.send(
 				resultMessage.success({
 					username: user.username,
 					shopid: user.shopid,
 					role: user.role,
-					campus: campus,
 				}),
 			);
 		} catch (error) {

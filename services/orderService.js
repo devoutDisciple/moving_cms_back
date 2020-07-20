@@ -25,7 +25,7 @@ const CountUtil = require('../util/CountUtil');
 
 module.exports = {
 	// 获取分页订单 所有订单
-	getAll: async (req, res) => {
+	getAllByPagesize: async (req, res) => {
 		try {
 			let { current, pagesize, order_type, shopid, code } = req.query,
 				condition = {};
@@ -106,11 +106,9 @@ module.exports = {
 			let totalCabinetCellNum = (Number(totalCabinetNum) * 29).toFixed(0);
 			// 已经使用过的格口数组
 			let usedCabinetCellArr = await cabinetModel.findAll({ attributes: ['used'] });
-			console.log(usedCabinetCellArr, 999);
 			let usedCabinetCellNum = 0,
 				abledCabinetCellNum = 0;
 			usedCabinetCellArr.forEach((item) => {
-				console.log(item.used, 8888);
 				let used = JSON.parse(item.used);
 				usedCabinetCellNum += used.length;
 			});
@@ -119,7 +117,6 @@ module.exports = {
 			totalMoney = Number(totalMoney).toFixed(2);
 			todayMoney = Number(todayMoney[0].count).toFixed(2);
 			todayUserNum = Number(todayUserNum[0].count);
-			console.log(totalOrderNum, todayOrderNum, totalMoney, todayMoney, totalUserNum, todayUserNum, totalCabinetCellNum, abledCabinetCellNum, 222);
 			res.send(
 				resultMessage.success({
 					totalOrderNum,
@@ -132,6 +129,33 @@ module.exports = {
 					abledCabinetCellNum,
 				}),
 			);
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 获取订单量统计 根据 周 月 年
+	getSalesByTime: async (req, res) => {
+		let { type } = req.query;
+		// type可能为 1-本周数据 2-本月数据 3-全部数据
+		let str = '';
+		// 查询过去七天，以天为单位
+		if (type == 1) {
+			str =
+				"select DATE_FORMAT(create_time,'%Y-%m-%d') days, count(id) count from `order` where  DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(create_time) group by days order by days DESC;";
+		}
+		// 查询过去一个月，以天为单位
+		if (type == 2) {
+			str =
+				"select DATE_FORMAT(create_time,'%Y-%m-%d') days, count(id) count from `order` where  DATE_FORMAT(create_time, '%Y%m' ) = DATE_FORMAT(CURDATE( ),'%Y%m') group by days order by days DESC;";
+		}
+		// 查询全部数据
+		if (type == 3) str = "select DATE_FORMAT(create_time,'%Y-%m-%d') days, count(id) count from `order` group by days order by days DESC;";
+		try {
+			sequelize.query(str, { type: sequelize.QueryTypes.SELECT }).then(function (projects) {
+				res.send(resultMessage.success(projects));
+			});
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));

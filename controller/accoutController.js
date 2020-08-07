@@ -16,8 +16,18 @@ router.get('/logout', (req, res) => {
 });
 
 // 根据商店id获取用户账号 getAccount
-router.get('/getAccount', (req, res) => {
-	accountService.getAccount(req, res);
+router.get('/getAllAccount', (req, res) => {
+	accountService.getAllAccount(req, res);
+});
+
+// 增加账户
+router.post('/addAccount', (req, res) => {
+	accountService.addAccount(req, res);
+});
+
+// 删除账户
+router.post('/deleteById', (req, res) => {
+	accountService.deleteById(req, res);
 });
 
 // 根据商店id获取用户账号 modifyAccount

@@ -12,4 +12,9 @@ router.get('/getMoneyNumByTime', (req, res) => {
 	billService.getMoneyNumByTime(req, res);
 });
 
+// 根据收费类型获取数据
+router.get('/getAllMoneyByType', (req, res) => {
+	billService.getAllMoneyByType(req, res);
+});
+
 module.exports = router;

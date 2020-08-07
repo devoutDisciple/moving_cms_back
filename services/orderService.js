@@ -96,7 +96,7 @@ module.exports = {
 			});
 			// 会员数量
 			let totalUserNum = await UserModel.count();
-			// 今天收入
+			// 今日新增
 			let todayUserNum = await sequelize.query('select count(id) as count from `user` where to_days(create_time) = to_days(now())', {
 				type: sequelize.QueryTypes.SELECT,
 			});
@@ -148,7 +148,7 @@ module.exports = {
 		// 查询过去一个月，以天为单位
 		if (type == 2) {
 			str =
-				"select DATE_FORMAT(create_time,'%Y-%m-%d') days, count(id) count from `order` where  DATE_FORMAT(create_time, '%Y%m' ) = DATE_FORMAT(CURDATE( ),'%Y%m') group by days order by days DESC;";
+				"select DATE_FORMAT(create_time,'%Y-%m-%d') days, count(id) count from `order` where  DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(create_time) group by days order by days DESC;";
 		}
 		// 查询全部数据
 		if (type == 3) str = "select DATE_FORMAT(create_time,'%Y-%m-%d') days, count(id) count from `order` group by days order by days DESC;";
@@ -156,6 +156,21 @@ module.exports = {
 			sequelize.query(str, { type: sequelize.QueryTypes.SELECT }).then(function (projects) {
 				res.send(resultMessage.success(projects));
 			});
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 获取订单种类数量
+	getOrderTypeNum: async (req, res) => {
+		try {
+			let result = {};
+			result.orderType1 = await orderModel.count({ where: { order_type: 1 } });
+			result.orderType2 = await orderModel.count({ where: { order_type: 2 } });
+			result.orderType3 = await orderModel.count({ where: { order_type: 3 } });
+			result.orderType4 = await orderModel.count({ where: { order_type: 4 } });
+			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));

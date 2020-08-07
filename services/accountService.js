@@ -1,8 +1,11 @@
 const resultMessage = require('../util/resultMessage');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const sequelize = require('../dataSource/MysqlPoolClass');
 const account = require('../models/account');
 const accountModel = account(sequelize);
 const shop = require('../models/shop');
+const responseUtil = require('../util/responseUtil');
 const shopModel = shop(sequelize);
 accountModel.belongsTo(shopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 
@@ -16,6 +19,7 @@ module.exports = {
 			return res.send(resultMessage.error([]));
 		}
 	},
+
 	// 用户登录
 	login: async (req, res) => {
 		try {
@@ -50,6 +54,7 @@ module.exports = {
 			return res.send(resultMessage.error([]));
 		}
 	},
+
 	// 用户退出登录
 	logout: async (req, res) => {
 		try {
@@ -62,14 +67,64 @@ module.exports = {
 	},
 
 	// 查看商店的用户名称和密码
-	getAccount: async (req, res) => {
+	getAllAccount: async (req, res) => {
 		try {
-			let data = await accountModel.findOne({
+			let where = {
+				role: {
+					[Op.not]: [1],
+				},
+			};
+			let { shopid } = req.query;
+			if (shopid !== '-1') where = { shopid: shopid };
+			let data = await accountModel.findAll({
+				where: where,
+				include: [
+					{
+						model: shopModel,
+						as: 'shopDetail',
+					},
+				],
+				order: [['id', 'ASC']],
+			});
+			let result = responseUtil.renderFieldsAll(data, ['id', 'name', 'phone', 'username', 'shopid', 'role', 'password']);
+			if (Array.isArray(data)) {
+				data.map((item, index) => {
+					if (item.shopDetail) {
+						result[index].shopName = item.shopDetail.name;
+					}
+					if (item.shopid == '-1') {
+						result[index].shopName = '总管理员账户';
+					}
+				});
+			}
+			res.send(resultMessage.success(result));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 增加账户
+	addAccount: async (req, res) => {
+		try {
+			await accountModel.create(req.body);
+			res.send(resultMessage.success('success'));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 删除账户
+	deleteById: async (req, res) => {
+		try {
+			let { id } = req.body;
+			await accountModel.destroy({
 				where: {
-					shopid: req.query.id,
+					id: id,
 				},
 			});
-			res.send(resultMessage.success(data));
+			res.send(resultMessage.success('success'));
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));
@@ -79,18 +134,23 @@ module.exports = {
 	// 修改商店的用户名称和密码
 	modifyAccount: async (req, res) => {
 		try {
+			let body = req.body;
+			let { id } = body;
 			await accountModel.update(
 				{
-					password: req.body.password,
+					name: body.name,
+					phone: body.phone,
+					username: body.username,
+					password: body.password,
+					role: body.role,
 				},
 				{
 					where: {
-						shopid: req.body.id,
+						id: id,
 					},
 				},
 			);
-			let type = req.body.type;
-			type != 1 ? res.clearCookie('userinfo') : null;
+			body.role == 1 ? res.clearCookie('userinfo') : null;
 			res.send(resultMessage.success('success'));
 		} catch (error) {
 			console.log(error);

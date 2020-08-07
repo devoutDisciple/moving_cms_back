@@ -11,6 +11,14 @@ module.exports = function (sequelize) {
 				primaryKey: true,
 				autoIncrement: true,
 			},
+			name: {
+				type: Sequelize.STRING(255),
+				allowNull: false,
+			},
+			phone: {
+				type: Sequelize.STRING(255),
+				allowNull: false,
+			},
 			username: {
 				type: Sequelize.STRING(255),
 				allowNull: false,

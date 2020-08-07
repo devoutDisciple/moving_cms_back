@@ -76,7 +76,7 @@ module.exports = {
 	addShop: async (req, res) => {
 		try {
 			let body = req.body;
-			let { username, password } = body;
+			let { username, password, phone, manager } = body;
 			let account = await AccountModel.findOne({
 				where: {
 					username: username,
@@ -93,7 +93,7 @@ module.exports = {
 				return res.send(resultMessage.errorMsg('店铺名称不能重复'));
 			}
 			let shop = await ShopModel.create(body);
-			await AccountModel.create({ username, password, shopid: shop.id, role: 2 });
+			await AccountModel.create({ username, password, shopid: shop.id, role: 2, phone: phone, name: manager });
 			res.send(resultMessage.success('success'));
 		} catch (error) {
 			console.log(error);

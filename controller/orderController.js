@@ -17,4 +17,9 @@ router.get('/getSalesByTime', (req, res) => {
 	orderService.getSalesByTime(req, res);
 });
 
+// 获取订单种类汇总
+router.get('/getOrderTypeNum', (req, res) => {
+	orderService.getOrderTypeNum(req, res);
+});
+
 module.exports = router;

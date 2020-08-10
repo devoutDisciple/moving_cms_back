@@ -41,6 +41,20 @@ module.exports = {
 		}
 	},
 
+	// 获取所有快递柜为下拉框
+	getAllForSelect: async (req, res) => {
+		try {
+			let cabinets = await CabinetModel.findAll({
+				order: [['sort', 'DESC']],
+			});
+			let result = responseUtil.renderFieldsAll(cabinets, ['id', 'name']);
+			res.send(resultMessage.success(result));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
 	// 增加快递柜
 	add: async (req, res, filename) => {
 		try {

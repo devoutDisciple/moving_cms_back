@@ -10,6 +10,7 @@ const userController = require('./userController');
 const addressController = require('./addressController');
 const billController = require('./billController');
 const optionController = require('./optionController');
+const exceptionController = require('./exceptionController');
 
 const testController = require('./testController');
 
@@ -38,6 +39,8 @@ const router = (app) => {
 	app.use('/bill', billController);
 	// 意见反馈相关 optionController
 	app.use('/option', optionController);
+	// 洗衣柜打开记录
+	app.use('/exception', exceptionController);
 
 	// 测试相关
 	app.use('/test', testController);

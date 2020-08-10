@@ -41,4 +41,9 @@ router.post('/update', upload.single('file'), (req, res) => {
 	cabinetService.update(req, res, filename);
 });
 
+// 获取所有快递柜为下拉框
+router.get('/getAllForSelect', (req, res) => {
+	cabinetService.getAllForSelect(req, res);
+});
+
 module.exports = router;

@@ -12,6 +12,9 @@ const billModel = bill(sequelize);
 const cabinet = require('../models/cabinet');
 const cabinetModel = cabinet(sequelize);
 
+const ept = require('../models/exception');
+const exceptionModel = ept(sequelize);
+
 const user = require('../models/user');
 const UserModel = user(sequelize);
 orderModel.belongsTo(UserModel, { foreignKey: 'userid', targetKey: 'id', as: 'userDetail' });
@@ -106,6 +109,11 @@ module.exports = {
 			let totalCabinetCellNum = (Number(totalCabinetNum) * 29).toFixed(0);
 			// 已经使用过的格口数组
 			let usedCabinetCellArr = await cabinetModel.findAll({ attributes: ['used'] });
+			// 格口操作次数
+			let cabinetUseTimes = await exceptionModel.count();
+			// 格口操作失败次数
+			let cabinetUseErrorTimes = await exceptionModel.count({ where: { success: 2 } });
+
 			let usedCabinetCellNum = 0,
 				abledCabinetCellNum = 0;
 			usedCabinetCellArr.forEach((item) => {
@@ -127,6 +135,8 @@ module.exports = {
 					todayUserNum,
 					totalCabinetCellNum,
 					abledCabinetCellNum,
+					cabinetUseTimes,
+					cabinetUseErrorTimes,
 				}),
 			);
 		} catch (error) {

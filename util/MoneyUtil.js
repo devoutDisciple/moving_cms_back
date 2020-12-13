@@ -12,7 +12,7 @@ module.exports = {
             // 用户应付金额
             item.payMoney = Number(item.discountMoney).toFixed(2);
             // 加急订单
-            if (item.urgency === 2) {
+            if (Number(item.urgency) === 2) {
                 // 加急的费用
                 item.urgencyMoney = Number(item.money * 0.5).toFixed(2);
                 // 折扣后的价格
@@ -22,10 +22,10 @@ module.exports = {
                 // 用户应付金额
                 item.payMoney = Number(item.discountMoney).toFixed(2);
             }
-            if (item.payMoney * 1 === 0) {
+            if (Number(item.payMoney) * 1 === 0) {
                 item.payMoney = 0.01;
             }
-            if (item.payMoney < 0) {
+            if (Number(item.payMoney) < 0) {
                 item.payMoney = 100000;
             }
         }

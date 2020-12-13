@@ -29,7 +29,7 @@ module.exports = {
                     [Op.not]: ['2'],
                 },
             };
-            if (shopid && shopid !== -1)where.shopid = shopid;
+            if (shopid && Number(shopid) !== -1)where.shopid = shopid;
             const swiper = await intergralModel.findAll({
                 where,
                 include: [

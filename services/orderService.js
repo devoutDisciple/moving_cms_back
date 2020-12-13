@@ -32,24 +32,32 @@ const ShopModel = shop(sequelize);
 orderModel.belongsTo(ShopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 
 const responseUtil = require('../util/responseUtil');
-const CountUtil = require('../util/CountUtil');
+const PageUtil = require('../util/PageUtil');
 
 module.exports = {
     // 获取分页订单 所有订单
     getAllByPagesize: async (req, res) => {
         try {
             const {
-                current, pagesize, order_type, shopid, code,
+                current, pagesize, order_type, shopid, code, username, phone,
             } = req.query;
             const condition = {};
-            if (order_type && order_type !== -1) condition.order_type = order_type;
-            if (shopid && shopid !== -1) condition.shopid = shopid;
-            if (code) {
-                condition.code = {
-                    [Op.like]: `%${code}%`,
-                };
+            if (order_type && Number(order_type) !== -1) condition.order_type = order_type;
+            if (shopid && Number(shopid) !== -1) condition.shopid = shopid;
+            if (code) condition.code = { [Op.like]: `%${code}%` };
+            if (username) {
+                const userDetail = await UserModel.findOne({
+                    where: { username },
+                });
+                if (userDetail) condition.userid = userDetail.id;
             }
-            const offset = CountUtil.getInt((Number(current) - 1) * pagesize);
+            if (phone) {
+                const userDetail = await UserModel.findOne({
+                    where: { phone },
+                });
+                if (userDetail) condition.userid = userDetail.id;
+            }
+            const pageCondition = PageUtil.getPageCondition(current, pagesize);
             const orders = await orderModel.findAll({
                 include: [
                     {
@@ -62,24 +70,32 @@ module.exports = {
                     },
                 ],
                 order: [['create_time', 'DESC']],
-                limit: Number(pagesize),
-                offset: Number(offset),
                 where: condition,
+                ...pageCondition,
             });
             const result = responseUtil.renderFieldsAll(orders, [
                 'id',
                 'code',
                 'shopid',
-                'userid',
+                'goods',
+                'discount',
+                'origin_money',
                 'money',
-                'status',
-                'is_sure',
+                'pre_pay',
+                'send_money',
                 'desc',
+                'urgency',
+                'status',
                 'order_type',
-                'intergral_num',
+                'send_status',
+                'send_home',
+                'cabinetId',
+                'cellid',
+                'is_sure',
                 'create_time',
             ]);
             result.forEach((item, index) => {
+                MoneyUtil.countMoney(item);
                 item.username = orders[index].userDetail ? orders[index].userDetail.username : '';
                 item.member = orders[index].userDetail ? orders[index].userDetail.member : '';
                 item.phone = orders[index].userDetail ? orders[index].userDetail.phone : '';
@@ -162,15 +178,15 @@ module.exports = {
         // type可能为 1-本周数据 2-本月数据 3-全部数据
         let str = '';
         // 查询过去七天，以天为单位
-        if (type === 1) {
+        if (Number(type) === 1) {
             str = 'select DATE_FORMAT(create_time,\'%Y-%m-%d\') days, count(id) count from `order` where  DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(create_time) group by days order by days DESC;';
         }
         // 查询过去一个月，以天为单位
-        if (type === 2) {
+        if (Number(type) === 2) {
             str = 'select DATE_FORMAT(create_time,\'%Y-%m-%d\') days, count(id) count from `order` where  DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(create_time) group by days order by days DESC;';
         }
         // 查询全部数据
-        if (type === 3) str = 'select DATE_FORMAT(create_time,\'%Y-%m-%d\') days, count(id) count from `order` group by days order by days DESC;';
+        if (Number(type) === 3) str = 'select DATE_FORMAT(create_time,\'%Y-%m-%d\') days, count(id) count from `order` group by days order by days DESC;';
         try {
             sequelize.query(str, { type: sequelize.QueryTypes.SELECT }).then((projects) => {
                 res.send(resultMessage.success(projects));
@@ -200,8 +216,8 @@ module.exports = {
     getAllListByUserId: async (req, res) => {
         try {
             const { userid } = req.query;
-            const orders = await orderModel.findAll({ where: { id: userid } });
-            const result = responseUtil.renderFieldsObj(order, [
+            const orders = await orderModel.findAll({ where: { userid } });
+            const result = responseUtil.renderFieldsAll(orders, [
                 'id',
                 'code',
                 'shopid',
@@ -231,20 +247,21 @@ module.exports = {
                 item.send_stattus = orders[index] ? orders[index].send_stattus || '' : '';
                 MoneyUtil.countMoney(item);
                 // 上门取衣
-                if (item.order_type === 2) {
+                if (Number(item.order_type) === 2) {
                     item.home_address = orders[index] ? orders[index].home_address || '' : '';
                     item.home_username = orders[index] ? orders[index].home_username || '' : '';
                     item.home_phone = orders[index] ? orders[index].home_phone || '' : '';
                     item.home_time = orders[index] ? moment(orders[index].home_time).format('YYYY-MM-DD HH:mm:ss') || '' : '';
                 }
                 // 积分兑换
-                if (item.order_type === 3) {
+                if (Number(item.order_type) === 3) {
                     item.intergral_address = orders[index] ? orders[index].intergral_address || '' : '';
                     item.intergral_phone = orders[index] ? orders[index].intergral_phone || '' : '';
                     item.intergral_username = orders[index] ? orders[index].intergral_username || '' : '';
                     item.intergral_num = orders[index] ? orders[index].intergral_num || '' : '';
                 }
             });
+            console.log(result, 333);
             res.send(resultMessage.success(result));
         } catch (error) {
             console.log(error);

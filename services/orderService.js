@@ -1,4 +1,3 @@
-const moment = require('moment');
 const Sequelize = require('sequelize');
 const resultMessage = require('../util/resultMessage');
 const sequelize = require('../dataSource/MysqlPoolClass');
@@ -205,63 +204,6 @@ module.exports = {
             result.orderType2 = await orderModel.count({ where: { order_type: 2 } });
             result.orderType3 = await orderModel.count({ where: { order_type: 3 } });
             result.orderType4 = await orderModel.count({ where: { order_type: 4 } });
-            res.send(resultMessage.success(result));
-        } catch (error) {
-            console.log(error);
-            return res.send(resultMessage.error([]));
-        }
-    },
-
-    // 根据用户id获取全部订单 getAllListByUserId
-    getAllListByUserId: async (req, res) => {
-        try {
-            const { userid } = req.query;
-            const orders = await orderModel.findAll({ where: { userid } });
-            const result = responseUtil.renderFieldsAll(orders, [
-                'id',
-                'code',
-                'shopid',
-                'goods',
-                'discount',
-                'origin_money',
-                'money',
-                'pre_pay',
-                'send_money',
-                'desc',
-                'urgency',
-                'status',
-                'order_type',
-                'send_status',
-                'send_home',
-                'cabinetId',
-                'cellid',
-                'is_sure',
-                'create_time',
-            ]);
-            result.forEach((item, index) => {
-                item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss');
-                item.shopName = orders[index].shopDetail ? orders[index].shopDetail.name || '' : '';
-                item.cabinetUrl = orders[index].cabinetDetail ? orders[index].cabinetDetail.url || '' : '';
-                item.cabinetName = orders[index].cabinetDetail ? orders[index].cabinetDetail.name || '' : '';
-                item.cabinetAdderss = orders[index].cabinetDetail ? orders[index].cabinetDetail.address || '' : '';
-                item.send_stattus = orders[index] ? orders[index].send_stattus || '' : '';
-                MoneyUtil.countMoney(item);
-                // 上门取衣
-                if (Number(item.order_type) === 2) {
-                    item.home_address = orders[index] ? orders[index].home_address || '' : '';
-                    item.home_username = orders[index] ? orders[index].home_username || '' : '';
-                    item.home_phone = orders[index] ? orders[index].home_phone || '' : '';
-                    item.home_time = orders[index] ? moment(orders[index].home_time).format('YYYY-MM-DD HH:mm:ss') || '' : '';
-                }
-                // 积分兑换
-                if (Number(item.order_type) === 3) {
-                    item.intergral_address = orders[index] ? orders[index].intergral_address || '' : '';
-                    item.intergral_phone = orders[index] ? orders[index].intergral_phone || '' : '';
-                    item.intergral_username = orders[index] ? orders[index].intergral_username || '' : '';
-                    item.intergral_num = orders[index] ? orders[index].intergral_num || '' : '';
-                }
-            });
-            console.log(result, 333);
             res.send(resultMessage.success(result));
         } catch (error) {
             console.log(error);

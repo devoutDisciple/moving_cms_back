@@ -76,122 +76,6 @@ module.exports = {
 		}
 	},
 
-	// 获取订单 通过 openid
-	getListByOpenid: async (req, res) => {
-		let openid = req.query.openid;
-		try {
-			let list = await orderModel.findAll({
-				where: {
-					openid: openid,
-				},
-				order: [['order_time', 'DESC']],
-			});
-			let result = [];
-			list.map((item) => {
-				let obj = {
-					id: item.id,
-					total_price: item.total_price,
-					discount_price: item.discount_price,
-					order_time: item.order_time,
-					status: item.status,
-				};
-				result.push(obj);
-			});
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
-	// 获取订单 通过商店id
-	getListByShopid: async (req, res) => {
-		let shopid = req.query.shopid;
-		try {
-			let list = await orderModel.findAll({
-				where: {
-					shopid: shopid,
-				},
-				include: [
-					{
-						model: UserModel,
-						as: 'userDetail',
-					},
-				],
-				order: [['order_time', 'DESC']],
-			});
-			let result = [];
-			list.map((item) => {
-				let obj = {
-					id: item.id,
-					total_price: item.total_price,
-					discount_price: item.discount_price,
-					order_time: item.order_time,
-					status: item.status,
-					username: item.userDetail ? item.userDetail.username : '',
-					people: item.people,
-					phone: item.phone,
-					address: item.address,
-					userPhone: item.userDetail ? item.userDetail.phone : '',
-					orderList: item.order_list,
-				};
-				result.push(obj);
-			});
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
-	// 获取订单数量通过商店id
-	getNumData: async (req, res) => {
-		let shopid = req.query.id;
-		let address = req.query.floor || [];
-		try {
-			let result = [];
-			let lists = await orderModel.findAll({
-				where: {
-					shopid: shopid,
-					status: 1,
-				},
-				attributes: ['address'],
-			});
-			address.map((item) => {
-				let num = 0;
-				lists.map((list) => {
-					if (list.address.includes(item)) num++;
-				});
-				result.push(num);
-			});
-			res.send(resultMessage.success(result));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
-	// 增加订单
-	addOrder: async (req, res) => {
-		try {
-			let body = req.body;
-			let orderList = JSON.parse(body.orderList);
-			await orderList.map(async (item) => {
-				await orderModel.create({
-					openid: body.openid,
-					shop_detail: JSON.stringify(item.shopDetail),
-					order_list: JSON.stringify(item.goods),
-					desc: item.comment,
-					total_price: item.totalPrice,
-					order_time: new Date().getTime(),
-				});
-			});
-			return res.send(resultMessage.success([]));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
 
 	// 更改订单的状态
 	updateStatus: async (req, res) => {
@@ -238,40 +122,6 @@ module.exports = {
 		}
 	},
 
-	// 获取商店的数据汇总
-	getDataByShopid: async (req, res) => {
-		let shopid = req.query.shopid;
-		try {
-			// 订单总量
-			let orderNum = await orderModel.count({
-				where: {
-					shopid: shopid,
-				},
-			});
-			let orderPrice = await orderModel.sum('total_price', {
-				where: {
-					shopid: shopid,
-				},
-			});
-			// 今天订单数据汇总
-			let todayNum = await sequelize.query(
-				'select count(id) as count from `order` where to_days(order_time) = to_days(now()) and shopid = ? and status != 4 and status != 6 and status != 7',
-				{ replacements: [shopid], type: sequelize.QueryTypes.SELECT },
-			);
-			let todayMoney = await sequelize.query(
-				'select sum(total_price) as count from `order` where to_days(order_time) = to_days(now()) and shopid = ? and status != 4 and status != 6 and status != 7',
-				{ replacements: [shopid], type: sequelize.QueryTypes.SELECT },
-			);
-			orderNum = Number(orderNum).toFixed(2);
-			orderPrice = Number(orderPrice).toFixed(2);
-			todayNum = Number(todayNum).toFixed(2);
-			todayMoney = Number(todayMoney).toFixed(2);
-			res.send(resultMessage.success({ orderNum, orderPrice, todayNum, todayMoney }));
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
 
 	// 获取全部的数据汇总
 	getData: async (req, res) => {
@@ -320,36 +170,6 @@ module.exports = {
 		if (type == 3) str = "select DATE_FORMAT(order_time,'%Y-%m-%d') days, count(id) count from `order` group by days order by days DESC;";
 		try {
 			sequelize.query(str, { type: sequelize.QueryTypes.SELECT }).then(function (projects) {
-				res.send(resultMessage.success(projects));
-			});
-		} catch (error) {
-			console.log(error);
-			return res.send(resultMessage.error([]));
-		}
-	},
-
-	// 获取商店销售数量的汇总
-	getSalesByShopid: async (req, res) => {
-		let shopid = req.query.shopid;
-		let type = req.query.type;
-		// type可能为 1-本周数据 2-本月数据 3-全部数据
-		let str = '';
-		// 查询过去七天，以天为单位
-		if (type == 1) {
-			str =
-				"select DATE_FORMAT(order_time,'%Y-%m-%d') days, count(id) count from `order` where  and status != 4 and status != 6 and status != 7 and DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(order_time) and shopid=? group by days order by days DESC;";
-		}
-		// 查询过去一个月，以天为单位
-		if (type == 2) {
-			str =
-				"select DATE_FORMAT(order_time,'%Y-%m-%d') days, count(id) count from `order` WHERE  and status != 4 and status != 6 and status != 7 and DATE_FORMAT(order_time, '%Y%m' ) = DATE_FORMAT(CURDATE( ),'%Y%m') and shopid=? group by days order by days DESC;";
-		}
-		// 查询全部数据
-		if (type == 3)
-			str =
-				"select DATE_FORMAT(order_time,'%Y-%m-%d') days, count(id) count from `order` where  and status != 4 and status != 6 and status != 7 and shopid = ? group by days order by days DESC;";
-		try {
-			sequelize.query(str, { replacements: [shopid], type: sequelize.QueryTypes.SELECT }).then(function (projects) {
 				res.send(resultMessage.success(projects));
 			});
 		} catch (error) {

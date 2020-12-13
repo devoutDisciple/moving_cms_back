@@ -22,4 +22,9 @@ router.get('/getOrderTypeNum', (req, res) => {
 	orderService.getOrderTypeNum(req, res);
 });
 
+// 根据用户id获取用户订单 getAllListByUserId
+router.get('/getAllListByUserId', (req, res) => {
+	orderService.getAllListByUserId(req, res);
+});
+
 module.exports = router;

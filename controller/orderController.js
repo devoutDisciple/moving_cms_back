@@ -23,4 +23,14 @@ router.get('/getOrderTypeNum', (req, res) => {
     orderService.getOrderTypeNum(req, res);
 });
 
+// 获取订单量统计  根据时间区间
+router.get('/getSalesByRange', (req, res) => {
+    orderService.getSalesByRange(req, res);
+});
+
+// 获取销售额统计 根据时间区间
+router.get('/getMoneyByRange', (req, res) => {
+    orderService.getMoneyByRange(req, res);
+});
+
 module.exports = router;

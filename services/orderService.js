@@ -196,6 +196,42 @@ module.exports = {
         }
     },
 
+    // 获取订单量统计  根据时间区间
+    getSalesByRange: async (req, res) => {
+        try {
+            const { startTime, endTime } = req.query;
+            let str = 'select DATE_FORMAT(create_time, "%Y%m%d") days,count(id) count from `order` where create_time > "';
+            str += startTime;
+            str += '" and create_time < "';
+            str += endTime;
+            str += '" group by days ;';
+            sequelize.query(str, { type: sequelize.QueryTypes.SELECT }).then((projects) => {
+                res.send(resultMessage.success(projects));
+            });
+        } catch (error) {
+            console.log(error);
+            return res.send(resultMessage.error([]));
+        }
+    },
+
+    // 获取订单量统计  根据时间区间
+    getMoneyByRange: async (req, res) => {
+        try {
+            const { startTime, endTime } = req.query;
+            let str = 'select DATE_FORMAT(create_time, "%Y%m%d") days,sum(money) count from `bill` where create_time > "';
+            str += startTime;
+            str += '" and create_time < "';
+            str += endTime;
+            str += '" group by days ;';
+            sequelize.query(str, { type: sequelize.QueryTypes.SELECT }).then((projects) => {
+                res.send(resultMessage.success(projects));
+            });
+        } catch (error) {
+            console.log(error);
+            return res.send(resultMessage.error([]));
+        }
+    },
+
     // 获取订单种类数量
     getOrderTypeNum: async (req, res) => {
         try {

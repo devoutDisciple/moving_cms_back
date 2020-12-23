@@ -11,7 +11,7 @@ clothingModel.belongsTo(ShopModel, { foreignKey: 'shopid', targetKey: 'id', as: 
 module.exports = {
 	// 增加衣物
 	add: async (req, res) => {
-		let body = req.body;
+		const body = req.body;
 		try {
 			await clothingModel.create(body);
 			res.send(resultMessage.success('success'));
@@ -39,11 +39,11 @@ module.exports = {
 	// 获取衣物根据shopid
 	getByShopid: async (req, res) => {
 		try {
-			let { shopid } = req.query,
-				where = {};
-			shopid && shopid != -1 ? (where.shopid = shopid) : null;
-			let clothings = await clothingModel.findAll({
-				where: where,
+			const { shopid } = req.query;
+			const where = {};
+			if (shopid && Number(shopid) !== -1) where.shopid = shopid;
+			const clothings = await clothingModel.findAll({
+				where,
 				include: [
 					{
 						model: ShopModel,
@@ -52,9 +52,9 @@ module.exports = {
 				],
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(clothings, ['id', 'shopid', 'name', 'price', 'sort', 'create_time']);
+			const result = responseUtil.renderFieldsAll(clothings, ['id', 'shopid', 'name', 'price', 'sort', 'create_time']);
 			result.forEach((item, index) => {
-				item.shopName = clothings[index]['shopDetail']['name'] || '';
+				item.shopName = clothings[index].shopDetail.name || '';
 			});
 			res.send(resultMessage.success(result));
 		} catch (error) {
@@ -66,7 +66,7 @@ module.exports = {
 	// 更新衣物
 	update: async (req, res) => {
 		try {
-			let body = req.body;
+			const body = req.body;
 			await clothingModel.update(body, {
 				where: {
 					id: body.id,

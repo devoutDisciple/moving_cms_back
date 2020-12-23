@@ -1,27 +1,28 @@
 const resultMessage = require('../util/resultMessage');
 const sequelize = require('../dataSource/MysqlPoolClass');
 const account = require('../models/account');
+
 const accountModel = account(sequelize);
 
 function loginMiddleware(req, res, next) {
-	let cookies = req.signedCookies;
+	const cookies = req.signedCookies;
 	// uploadDescImg
-	// if(req.url == "/goods/uploadDescImg") {
+	// if(req.url === "/goods/uploadDescImg") {
 	// 	return next();
 	// }
 	// 判断用户cookie是否正确
 	if (cookies && cookies.userinfo) {
-		let userinfo = cookies.userinfo,
-			username = userinfo.split('_#$%^%$#_')[0],
-			password = userinfo.split('_#$%^%$#_')[1];
+		const userinfo = cookies.userinfo;
+		const username = userinfo.split('_#$%^%$#_')[0];
+		const password = userinfo.split('_#$%^%$#_')[1];
 		return accountModel
 			.findOne({
 				where: {
-					username: username,
+					username,
 				},
 			})
 			.then((user) => {
-				if (username == user.username && password == user.password && req.path == '/account/isLogin') {
+				if (username === user.username && password === user.password && req.path === '/account/isLogin') {
 					return res.send(
 						resultMessage.success({
 							username: user.username,
@@ -30,11 +31,11 @@ function loginMiddleware(req, res, next) {
 						}),
 					);
 				}
-				if (username == user.username && password == user.password) return next();
+				if (username === user.username && password === user.password) return next();
 				return res.send(resultMessage.loginError('请重新登录!'));
 			});
 	}
-	if (!cookies.userinfo && req.url != '/account/login') {
+	if (!cookies.userinfo && req.url !== '/account/login') {
 		return res.send(resultMessage.loginError('请重新登录!'));
 	}
 	next();

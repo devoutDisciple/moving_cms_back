@@ -1,7 +1,7 @@
-const resultMessage = require('../util/resultMessage');
 const request = require('request');
 const md5 = require('md5');
 const moment = require('moment');
+const resultMessage = require('../util/resultMessage');
 
 module.exports = {
 	// 登录
@@ -10,11 +10,11 @@ module.exports = {
 		try {
 			request(
 				{
-					url: url,
+					url,
 					method: 'POST',
 					form: { userid: 'xiyigui', password: '123123' },
 				},
-				function (error, response, body) {
+				(error, response, body) => {
 					console.log(body);
 					res.send(resultMessage.success(body));
 				},
@@ -40,12 +40,12 @@ module.exports = {
 			params.sign = str;
 			request(
 				{
-					url: url,
+					url,
 					method: 'POST',
 					headers: params,
 					form: { boxid: 'xiyiguitest001' },
 				},
-				function (error, response, body) {
+				(error, response, body) => {
 					console.log(body);
 					res.send(resultMessage.success(body));
 				},
@@ -72,12 +72,12 @@ module.exports = {
 			params.sign = str;
 			request(
 				{
-					url: url,
+					url,
 					method: 'POST',
 					headers: params,
 					form: { boxid: 'xiyiguitest001', cellid: '119' },
 				},
-				function (error, response, body) {
+				(error, response, body) => {
 					console.log(body);
 					res.send(resultMessage.success(body));
 				},

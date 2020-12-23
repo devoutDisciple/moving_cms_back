@@ -1,8 +1,9 @@
 /* jshint indent: 2 */
 
 const Sequelize = require('sequelize');
-module.exports = function (sequelize) {
-	return sequelize.define(
+
+module.exports = (sequelize) =>
+	sequelize.define(
 		'bill',
 		{
 			id: {
@@ -52,4 +53,3 @@ module.exports = function (sequelize) {
 			timestamps: false,
 		},
 	);
-};

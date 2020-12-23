@@ -2,14 +2,18 @@ const fs = require('fs');
 const resultMessage = require('../util/resultMessage');
 const sequelize = require('../dataSource/MysqlPoolClass');
 const cabinet = require('../models/cabinet');
+
 const CabinetModel = cabinet(sequelize);
 const shop = require('../models/shop');
+
 const ShopModel = shop(sequelize);
 // ShopModel.belongsTo(CabinetModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 CabinetModel.belongsTo(ShopModel, { foreignKey: 'shopid', targetKey: 'id', as: 'shopDetail' });
 const AppConfig = require('../config/AppConfig');
+
 const preUrl = AppConfig.cabinetPresUrl;
 const ImageDeal = require('../util/ImagesDeal');
+
 const filePath = AppConfig.cabinetImgFilePath;
 const responseUtil = require('../util/responseUtil');
 
@@ -17,11 +21,11 @@ module.exports = {
 	// 根据商店ip获取快递柜
 	getByShopId: async (req, res) => {
 		try {
-			let { shopid } = req.query;
-			let where = {};
-			shopid && shopid != -1 ? (where.shopid = shopid) : null;
-			let swiper = await CabinetModel.findAll({
-				where: where,
+			const { shopid } = req.query;
+			const where = {};
+			if (shopid && Number(shopid) !== -1) where.shopid = shopid;
+			const swiper = await CabinetModel.findAll({
+				where,
 				include: [
 					{
 						model: ShopModel,
@@ -30,9 +34,9 @@ module.exports = {
 				],
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'boxid', 'name', 'address', 'url', 'sort', 'create_time']);
+			const result = responseUtil.renderFieldsAll(swiper, ['id', 'shopid', 'boxid', 'name', 'address', 'url', 'sort', 'create_time']);
 			result.forEach((item, index) => {
-				item.shopName = swiper[index]['shopDetail']['name'] || '';
+				item.shopName = swiper[index].shopDetail.name || '';
 			});
 			res.send(resultMessage.success(result));
 		} catch (error) {
@@ -44,10 +48,10 @@ module.exports = {
 	// 获取所有快递柜为下拉框
 	getAllForSelect: async (req, res) => {
 		try {
-			let cabinets = await CabinetModel.findAll({
+			const cabinets = await CabinetModel.findAll({
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(cabinets, ['id', 'name']);
+			const result = responseUtil.renderFieldsAll(cabinets, ['id', 'name']);
 			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
@@ -58,8 +62,8 @@ module.exports = {
 	// 增加快递柜
 	add: async (req, res, filename) => {
 		try {
-			let body = req.body;
-			let params = {
+			const body = req.body;
+			const params = {
 				shopid: body.shopid,
 				name: body.name,
 				sort: body.sort,
@@ -67,7 +71,7 @@ module.exports = {
 				address: body.address,
 				create_time: body.create_time,
 			};
-			filename ? (params.url = preUrl + filename) : null;
+			if (filename) params.url = preUrl + filename;
 			await CabinetModel.create(params);
 			res.send(resultMessage.success('success'));
 			ImageDeal.dealImages(`${filePath}/${filename}`);
@@ -98,14 +102,12 @@ module.exports = {
 	// 更新柜子
 	update: async (req, res, filename) => {
 		try {
-			let { id, sort, name, address, boxid, nopicture } = req.body;
-			let params = { sort, name, address, boxid };
-			if (!nopicture) {
-				filename ? (params.url = preUrl + filename) : null;
-			}
+			const { id, sort, name, address, boxid, nopicture } = req.body;
+			const params = { sort, name, address, boxid };
+			if (!nopicture && filename) params.url = preUrl + filename;
 			await CabinetModel.update(params, {
 				where: {
-					id: id,
+					id,
 				},
 			});
 			res.send(resultMessage.success('success'));

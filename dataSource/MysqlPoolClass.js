@@ -1,5 +1,6 @@
-const config = require('../config/sqlConfig');
 const Sequelize = require('sequelize');
+const config = require('../config/sqlConfig');
+
 const sequelize = new Sequelize(config.database, config.username, config.password, {
 	host: config.host,
 	dialect: config.dialect,
@@ -9,13 +10,14 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 		acquire: 30000,
 		idle: 10000,
 	},
-	timezone: '+08:00', //东八时区
+	timezone: '+08:00', // 东八时区
 
 	// SQLite only
 	storage: 'path/to/database.sqlite',
+	logging: false,
 
 	// http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-	operatorsAliases: false,
+	// operatorsAliases: false,
 });
 
 module.exports = sequelize;

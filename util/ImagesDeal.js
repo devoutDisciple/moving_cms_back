@@ -1,14 +1,16 @@
 // const images = require("images");
 const fs = require('fs');
 const gm = require('gm');
+
 let num = 1;
 
 module.exports = {
-	dealImages: async function (filePath) {
+	async dealImages(filePath) {
 		try {
 			const self = this;
 			fs.stat(filePath, (err, status) => {
-				let size = Number.parseInt(Number(status.size) / 1024);
+				// eslint-disable-next-line radix
+				const size = Number.parseInt(Number(status.size) / 1024);
 				if (size <= 120) {
 					num = 1;
 					return;
@@ -21,13 +23,13 @@ module.exports = {
 					}
 					if (num < 5) {
 						try {
-							gm(filePath).size(function (error) {
+							gm(filePath).size((error) => {
 								if (error) return console.log(error);
 								gm(filePath)
 									.resize(1350, 1000)
 									.noProfile()
-									.write(filePath, function (error) {
-										if (error) return console.log(error);
+									.write(filePath, (errorMsg) => {
+										if (errorMsg) return console.log(errorMsg);
 										self.dealImages(filePath);
 									});
 							});
@@ -40,16 +42,13 @@ module.exports = {
 					}
 					if (num >= 5 && num < 10) {
 						try {
-							gm(filePath).size(function (error, value) {
+							gm(filePath).size((error, value) => {
 								if (error) return console.log(error);
 								gm(filePath)
 									.resize(value.width - 200, value.height - 200)
 									.noProfile()
-									.write(filePath, function (error) {
-										if (error) {
-											console.log(error);
-											return;
-										}
+									.write(filePath, (errorMsg) => {
+										if (errorMsg) return console.log(errorMsg);
 										self.dealImages(filePath);
 									});
 							});
@@ -62,16 +61,13 @@ module.exports = {
 					}
 					if (num >= 10) {
 						try {
-							gm(filePath).size(function (error, value) {
+							gm(filePath).size((error, value) => {
 								if (error) return console.log(error);
 								gm(filePath)
 									.resize(value.width - 500, value.height - 500)
 									.noProfile()
-									.write(filePath, function (error) {
-										if (error) {
-											console.log(error);
-											return;
-										}
+									.write(filePath, (errorMsg) => {
+										if (errorMsg) return console.log(errorMsg);
 										self.dealImages(filePath);
 									});
 							});

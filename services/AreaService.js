@@ -2,19 +2,20 @@ const resultMessage = require('../util/resultMessage');
 const sequelize = require('../dataSource/MysqlPoolClass');
 const area = require('../models/area');
 const responseUtil = require('../util/responseUtil');
+
 const areaModel = area(sequelize);
 
 module.exports = {
 	// 获取全部区域
 	getAllByLevel: async (req, res) => {
 		try {
-			let areas = await areaModel.findAll({
+			const areas = await areaModel.findAll({
 				order: [
 					['level', 'ASC'],
 					['sort', 'DESC'],
 				],
 			});
-			let result = responseUtil.renderFieldsAll(areas, ['id', 'name', 'parentid', 'level', 'active', 'create_time', 'sort']);
+			const result = responseUtil.renderFieldsAll(areas, ['id', 'name', 'parentid', 'level', 'active', 'create_time', 'sort']);
 			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
@@ -25,8 +26,8 @@ module.exports = {
 	// 新增区域
 	add: async (req, res) => {
 		try {
-			let body = req.body;
-			let params = {
+			const body = req.body;
+			const params = {
 				parentid: body.parentid,
 				level: body.level,
 				name: body.name,
@@ -45,7 +46,7 @@ module.exports = {
 	// 更新区域
 	update: async (req, res) => {
 		try {
-			let body = req.body;
+			const body = req.body;
 			await areaModel.update(body, {
 				where: {
 					id: body.id,
@@ -76,12 +77,12 @@ module.exports = {
 	// 根据parentid获取区域
 	getAllByParentid: async (req, res) => {
 		try {
-			let ares = await areaModel.findAll({
+			const ares = await areaModel.findAll({
 				where: {
 					parentid: req.query.parentid,
 				},
 			});
-			let result = responseUtil.renderFieldsAll(ares, ['id', 'name', 'parentid', 'level', 'active', 'create_time', 'sort']);
+			const result = responseUtil.renderFieldsAll(ares, ['id', 'name', 'parentid', 'level', 'active', 'create_time', 'sort']);
 			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);

@@ -1,31 +1,37 @@
-const resultMessage = require('../util/resultMessage');
+const fs = require('fs');
 const Sequelize = require('sequelize');
+const resultMessage = require('../util/resultMessage');
+
 const Op = Sequelize.Op;
 const sequelize = require('../dataSource/MysqlPoolClass');
 const swiper = require('../models/swiper');
+
 const SwiperModel = swiper(sequelize);
 const responseUtil = require('../util/responseUtil');
 const shop = require('../models/shop');
+
 const shopModel = shop(sequelize);
 const AppConfig = require('../config/AppConfig');
-let preUrl = AppConfig.swiperPreUrl;
-const fs = require('fs');
-let filePath = AppConfig.swiperImgFilePath;
+
+const preUrl = AppConfig.swiperPreUrl;
+
+const filePath = AppConfig.swiperImgFilePath;
 const ImageDeal = require('../util/ImagesDeal');
+
 SwiperModel.belongsTo(shopModel, { foreignKey: 'shop_id', targetKey: 'id', as: 'shopDetail' });
 
 module.exports = {
 	getByShopId: async (req, res) => {
 		try {
-			let shopid = req.query.shopid;
-			let where = {
+			const shopid = req.query.shopid;
+			const where = {
 				is_delete: {
 					[Op.not]: ['2'],
 				},
 			};
-			shopid && shopid != -1 ? (where.shop_id = shopid) : null;
-			let swiper = await SwiperModel.findAll({
-				where: where,
+			if (shopid && Number(shopid) !== -1) where.shop_id = shopid;
+			const swiperDetail = await SwiperModel.findAll({
+				where,
 				include: [
 					{
 						model: shopModel,
@@ -34,9 +40,9 @@ module.exports = {
 				],
 				order: [['sort', 'DESC']],
 			});
-			let result = responseUtil.renderFieldsAll(swiper, ['id', 'shop_id', 'url', 'sort', 'create_time']);
+			const result = responseUtil.renderFieldsAll(swiperDetail, ['id', 'shop_id', 'url', 'sort', 'create_time']);
 			result.forEach((item, index) => {
-				item.shopName = swiper[index]['shopDetail'] ? swiper[index]['shopDetail']['name'] || '' : '';
+				item.shopName = swiperDetail[index].shopDetail ? swiperDetail[index].shopDetail.name || '' : '';
 			});
 			res.send(resultMessage.success(result));
 		} catch (error) {
@@ -48,13 +54,13 @@ module.exports = {
 	// 增加轮播图
 	add: async (req, res, filename) => {
 		try {
-			let body = req.body;
-			let params = {
+			const body = req.body;
+			const params = {
 				shop_id: body.shopid,
 				sort: body.sort,
 				create_time: body.create_time,
 			};
-			filename ? (params.url = preUrl + filename) : null;
+			if (filename) params.url = preUrl + filename;
 			await SwiperModel.create(params);
 			res.send(resultMessage.success('success'));
 			ImageDeal.dealImages(`${filePath}/${filename}`);
@@ -70,11 +76,9 @@ module.exports = {
 	// 更新轮播图
 	update: async (req, res, filename) => {
 		try {
-			let body = req.body;
-			let params = { sort: body.sort };
-			if (!body.nopicture) {
-				filename ? (params.url = preUrl + filename) : null;
-			}
+			const body = req.body;
+			const params = { sort: body.sort };
+			if (!body.nopicture && filename) params.url = preUrl + filename;
 			await SwiperModel.update(params, {
 				where: {
 					id: body.id,

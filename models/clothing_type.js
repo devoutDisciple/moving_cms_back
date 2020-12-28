@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 
 module.exports = sequelize => {
 	return sequelize.define(
-		'version',
+		'clothing_type',
 		{
 			id: {
 				type: Sequelize.INTEGER(11),
@@ -12,19 +12,19 @@ module.exports = sequelize => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			version: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
-			desc: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
-			current: {
+			shopid: {
 				type: Sequelize.INTEGER(11),
 				allowNull: false,
 			},
-			force: {
+			name: {
+				type: Sequelize.STRING(255),
+				allowNull: false,
+			},
+			url: {
+				type: Sequelize.STRING(255),
+				allowNull: true,
+			},
+			sort: {
 				type: Sequelize.INTEGER(11),
 				allowNull: false,
 				defaultValue: '1',
@@ -33,18 +33,9 @@ module.exports = sequelize => {
 				type: Sequelize.DATE,
 				allowNull: true,
 			},
-			type: {
-				type: Sequelize.INTEGER(11),
-				allowNull: false,
-				defaultValue: '1',
-			},
-			remark: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
 		},
 		{
-			tableName: 'version',
+			tableName: 'clothing_type',
 			timestamps: false,
 		},
 	);

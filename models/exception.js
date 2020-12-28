@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'exception',
 		{
 			id: {
@@ -28,12 +28,12 @@ module.exports = (sequelize) =>
 				type: Sequelize.INTEGER(11),
 				allowNull: true,
 			},
-			boxid: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
-			},
 			cabinetid: {
 				type: Sequelize.INTEGER(11),
+				allowNull: true,
+			},
+			boxid: {
+				type: Sequelize.STRING(255),
 				allowNull: true,
 			},
 			cellid: {
@@ -50,3 +50,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

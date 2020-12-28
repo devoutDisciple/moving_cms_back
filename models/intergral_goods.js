@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'intergral_goods',
 		{
 			id: {
@@ -15,7 +15,6 @@ module.exports = (sequelize) =>
 			shopid: {
 				type: Sequelize.INTEGER(11),
 				allowNull: false,
-				primaryKey: true,
 			},
 			name: {
 				type: Sequelize.STRING(255),
@@ -45,6 +44,7 @@ module.exports = (sequelize) =>
 			is_delete: {
 				type: Sequelize.INTEGER(11),
 				allowNull: true,
+				defaultValue: '1',
 			},
 		},
 		{
@@ -52,3 +52,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'intergral_record',
 		{
 			id: {
@@ -42,7 +42,7 @@ module.exports = (sequelize) =>
 			status: {
 				type: Sequelize.INTEGER(11),
 				allowNull: true,
-				defaultValue: 1,
+				defaultValue: '1',
 			},
 			create_time: {
 				type: Sequelize.DATE,
@@ -54,3 +54,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

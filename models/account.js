@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = (sequelize) => {
+	return sequelize.define(
 		'account',
 		{
 			id: {
@@ -14,11 +14,11 @@ module.exports = (sequelize) =>
 			},
 			name: {
 				type: Sequelize.STRING(255),
-				allowNull: false,
+				allowNull: true,
 			},
 			phone: {
 				type: Sequelize.STRING(255),
-				allowNull: false,
+				allowNull: true,
 			},
 			username: {
 				type: Sequelize.STRING(255),
@@ -37,6 +37,11 @@ module.exports = (sequelize) =>
 				allowNull: true,
 				defaultValue: '2',
 			},
+			send_message: {
+				type: Sequelize.INTEGER(11),
+				allowNull: true,
+				defaultValue: '1',
+			},
 			is_delete: {
 				type: Sequelize.STRING(255),
 				allowNull: false,
@@ -48,3 +53,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

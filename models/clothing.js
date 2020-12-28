@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'clothing',
 		{
 			id: {
@@ -11,6 +11,11 @@ module.exports = (sequelize) =>
 				allowNull: false,
 				primaryKey: true,
 				autoIncrement: true,
+			},
+			typeid: {
+				type: Sequelize.INTEGER(11),
+				allowNull: true,
+				defaultValue: '1',
 			},
 			shopid: {
 				type: Sequelize.INTEGER(11),
@@ -25,7 +30,7 @@ module.exports = (sequelize) =>
 				allowNull: true,
 			},
 			sort: {
-				type: Sequelize.INTEGER(11),
+				type: Sequelize.INTEGER(255),
 				allowNull: true,
 			},
 			create_time: {
@@ -38,3 +43,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

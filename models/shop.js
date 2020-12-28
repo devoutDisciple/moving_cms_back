@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'shop',
 		{
 			id: {
@@ -28,6 +28,10 @@ module.exports = (sequelize) =>
 				type: Sequelize.STRING(500),
 				allowNull: true,
 				defaultValue: '浙江省杭州市余杭区五常街道西溪水岸花苑',
+			},
+			url: {
+				type: Sequelize.STRING(255),
+				allowNull: true,
 			},
 			longitude: {
 				type: Sequelize.STRING(255),
@@ -85,3 +89,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

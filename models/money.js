@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 
 module.exports = sequelize => {
 	return sequelize.define(
-		'version',
+		'money',
 		{
 			id: {
 				type: Sequelize.INTEGER(11),
@@ -12,39 +12,23 @@ module.exports = sequelize => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			version: {
+			money: {
 				type: Sequelize.STRING(255),
 				allowNull: true,
 			},
-			desc: {
+			send: {
 				type: Sequelize.STRING(255),
 				allowNull: true,
+				defaultValue: '0',
 			},
-			current: {
+			sort: {
 				type: Sequelize.INTEGER(11),
-				allowNull: false,
-			},
-			force: {
-				type: Sequelize.INTEGER(11),
-				allowNull: false,
+				allowNull: true,
 				defaultValue: '1',
-			},
-			create_time: {
-				type: Sequelize.DATE,
-				allowNull: true,
-			},
-			type: {
-				type: Sequelize.INTEGER(11),
-				allowNull: false,
-				defaultValue: '1',
-			},
-			remark: {
-				type: Sequelize.STRING(255),
-				allowNull: true,
 			},
 		},
 		{
-			tableName: 'version',
+			tableName: 'money',
 			timestamps: false,
 		},
 	);

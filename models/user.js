@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'user',
 		{
 			id: {
@@ -68,9 +68,10 @@ module.exports = (sequelize) =>
 				type: Sequelize.DATE,
 				allowNull: true,
 			},
-			create_time: {
-				type: Sequelize.DATE,
+			cabinet_use_time: {
+				type: Sequelize.INTEGER(11),
 				allowNull: true,
+				defaultValue: '0',
 			},
 			balance: {
 				type: Sequelize.STRING(255),
@@ -87,6 +88,10 @@ module.exports = (sequelize) =>
 				allowNull: true,
 				defaultValue: '1',
 			},
+			create_time: {
+				type: Sequelize.DATE,
+				allowNull: true,
+			},
 			is_delete: {
 				type: Sequelize.STRING(255),
 				allowNull: true,
@@ -98,3 +103,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

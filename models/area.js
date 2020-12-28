@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'area',
 		{
 			id: {
@@ -13,8 +13,8 @@ module.exports = (sequelize) =>
 				autoIncrement: true,
 			},
 			parentid: {
-				type: Sequelize.INTEGER(11),
-				allowNull: true,
+				type: Sequelize.INTEGER(255),
+				allowNull: false,
 				defaultValue: '1',
 			},
 			level: {
@@ -50,3 +50,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

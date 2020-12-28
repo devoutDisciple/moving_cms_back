@@ -2,8 +2,8 @@
 
 const Sequelize = require('sequelize');
 
-module.exports = (sequelize) =>
-	sequelize.define(
+module.exports = sequelize => {
+	return sequelize.define(
 		'register',
 		{
 			id: {
@@ -39,3 +39,4 @@ module.exports = (sequelize) =>
 			timestamps: false,
 		},
 	);
+};

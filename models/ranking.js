@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 
 module.exports = sequelize => {
 	return sequelize.define(
-		'version',
+		'ranking',
 		{
 			id: {
 				type: Sequelize.INTEGER(11),
@@ -12,22 +12,32 @@ module.exports = sequelize => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			version: {
+			userid: {
+				type: Sequelize.INTEGER(11),
+				allowNull: true,
+			},
+			username: {
 				type: Sequelize.STRING(255),
 				allowNull: true,
 			},
-			desc: {
+			photo: {
 				type: Sequelize.STRING(255),
 				allowNull: true,
 			},
-			current: {
-				type: Sequelize.INTEGER(11),
-				allowNull: false,
+			money: {
+				type: Sequelize.STRING(255),
+				allowNull: true,
+				defaultValue: '0',
 			},
-			force: {
-				type: Sequelize.INTEGER(11),
-				allowNull: false,
-				defaultValue: '1',
+			discount: {
+				type: Sequelize.STRING(255),
+				allowNull: true,
+				defaultValue: '0',
+			},
+			orderids: {
+				type: Sequelize.STRING(5000),
+				allowNull: true,
+				defaultValue: '[]',
 			},
 			create_time: {
 				type: Sequelize.DATE,
@@ -35,16 +45,12 @@ module.exports = sequelize => {
 			},
 			type: {
 				type: Sequelize.INTEGER(11),
-				allowNull: false,
-				defaultValue: '1',
-			},
-			remark: {
-				type: Sequelize.STRING(255),
 				allowNull: true,
+				defaultValue: '1',
 			},
 		},
 		{
-			tableName: 'version',
+			tableName: 'ranking',
 			timestamps: false,
 		},
 	);

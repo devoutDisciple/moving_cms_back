@@ -38,7 +38,7 @@ module.exports = {
 	getAllByPagesize: async (req, res) => {
 		try {
 			const { current, pagesize, order_type, shopid, code, username, phone } = req.query;
-			const condition = {};
+			const condition = { is_delete: 1 };
 			if (order_type && Number(order_type) !== -1) condition.order_type = order_type;
 			if (shopid && Number(shopid) !== -1) condition.shopid = shopid;
 			if (code) condition.code = { [Op.like]: `%${code}%` };

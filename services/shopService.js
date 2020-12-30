@@ -207,7 +207,7 @@ module.exports = {
 			// 获取token
 			request.get(
 				`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${AppConfig.appid}&secret=${AppConfig.AppSecret}`,
-				function (error, response, body) {
+				(error, response, body) => {
 					body = JSON.parse(body);
 					const access_token = body.access_token;
 					const params = `/pages/shop/shop?id=${shopid}`;
@@ -224,7 +224,7 @@ module.exports = {
 								path: params,
 							},
 						},
-						function () {
+						() => {
 							return res.send(resultMessage.success(`http://www.bws666.com/${name}.png`));
 						},
 					).pipe(fs.createWriteStream(`${appConfig.swiperImgFilePath}/${name}.png`));

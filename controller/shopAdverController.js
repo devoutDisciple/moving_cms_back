@@ -2,8 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 const multer = require('multer');
-const adverService = require('../services/adverService');
+const adverService = require('../services/shopAdverService');
 const AppConfig = require('../config/AppConfig');
+const ObjectUtil = require('../util/ObjectUtil');
 
 const filePath = AppConfig.adverImgFilePath;
 
@@ -16,14 +17,19 @@ const storage = multer.diskStorage({
 	},
 	filename(req, file, cb) {
 		// 将保存文件名设置为 随机字符串 + 时间戳名，比如 JFSDJF323423-1342342323.jpg
-		filename = 'advertisement.png';
+		filename = `swiper_${ObjectUtil.getName()}_${Date.now()}.jpg`;
 		cb(null, filename);
 	},
 });
 const upload = multer({ dest: filePath, storage });
 
+// 查询广告图列表
+router.get('/list', (req, res) => {
+	adverService.getList(req, res);
+});
+
 // 编辑广告图
-router.post('/modify', upload.single('file'), (req, res) => {
+router.post('/add', upload.single('file'), (req, res) => {
 	adverService.update(req, res, filename);
 });
 

@@ -26,7 +26,7 @@ app.use(
 		saveUninitialized: true,
 	}),
 );
-app.use(express.static(Env.env ? '/root/asserts' : path.join(__dirname, './public')));
+app.use(express.static(Env.env ? '/root/asserts' : path.join(__dirname, '../asserts')));
 app.use('/moving', express.static(path.join(__dirname, './public')));
 // parse application/json
 app.use(bodyParser.json());

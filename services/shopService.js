@@ -23,8 +23,7 @@ module.exports = {
 			const where = {
 				is_delete: { [Op.not]: ['2'] },
 			};
-			if (name) where.name = { [Op.like]: `%${name}%` };
-
+			if (name && String(name) !== '-1') where.name = { [Op.like]: `%${name}%` };
 			const shops = await ShopModel.findAll({
 				where,
 				order: [['sort', 'DESC']],

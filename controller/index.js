@@ -12,6 +12,7 @@ const billController = require('./billController');
 const optionController = require('./optionController');
 const exceptionController = require('./exceptionController');
 const adverController = require('./adverController');
+const shopAdverController = require('./shopAdverController');
 
 const testController = require('./testController');
 
@@ -42,8 +43,10 @@ const router = (app) => {
 	app.use('/option', optionController);
 	// 洗衣柜打开记录
 	app.use('/exception', exceptionController);
-	// 广告图片 adverController
+	// 广告图片
 	app.use('/adver', adverController);
+	// 商店广告图片
+	app.use('/shopAdver', shopAdverController);
 
 	// 测试相关
 	app.use('/test', testController);

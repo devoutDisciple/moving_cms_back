@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 	},
 	filename(req, file, cb) {
 		// 将保存文件名设置为 随机字符串 + 时间戳名，比如 JFSDJF323423-1342342323.jpg
-		filename = `swiper_${ObjectUtil.getName()}_${Date.now()}.jpg`;
+		filename = `adver_${ObjectUtil.getName()}_${Date.now()}.jpg`;
 		cb(null, filename);
 	},
 });
@@ -28,9 +28,9 @@ router.get('/list', (req, res) => {
 	adverService.getList(req, res);
 });
 
-// 编辑广告图
+// 添加商家广告图
 router.post('/add', upload.single('file'), (req, res) => {
-	adverService.update(req, res, filename);
+	adverService.addAdver(req, res, filename);
 });
 
 module.exports = router;

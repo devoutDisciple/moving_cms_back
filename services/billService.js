@@ -1,9 +1,13 @@
+const moment = require('moment');
 const resultMessage = require('../util/resultMessage');
 const sequelize = require('../dataSource/MysqlPoolClass');
 const responseUtil = require('../util/responseUtil');
 const bill = require('../models/bill');
+const user = require('../models/user');
+const PayUtil = require('../util/PayUtil');
 
 const billModel = bill(sequelize);
+const userModel = user(sequelize);
 
 module.exports = {
 	// 获取用户所有消费记录
@@ -64,6 +68,42 @@ module.exports = {
 			result.clothing = Number(result.clothing).toFixed(2);
 			result.save_clothing = Number(result.save_clothing).toFixed(2);
 			res.send(resultMessage.success(result));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
+
+	// 修改用户余额
+	updateMoney: async (req, res) => {
+		try {
+			let { money } = req.body;
+			const { operation, userid } = req.body;
+			const userDetail = await userModel.findOne({ where: { id: userid }, attributes: ['id', 'balance'] });
+			const balance = userDetail.balance;
+			let newBalance = 0;
+			money = Math.abs(money);
+			// 增加余额
+			if (operation === 1) {
+				newBalance = Number(Number(balance) + Number(money)).toFixed(2);
+			}
+			// 减少余额
+			if (operation === 2) {
+				newBalance = Number(Number(balance) - Number(money)).toFixed(2);
+			}
+			// 如果余额少于0
+			if (newBalance < 0) return res.send(resultMessage.errorMsg('用户余额不可为负！'));
+			await billModel.create({
+				code: PayUtil.getNonceStr(),
+				userid: userDetail.id,
+				money: operation === 1 ? money : `-${money}`,
+				send: 0,
+				pay_type: 'account',
+				type: 'update',
+				create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+			});
+			await userModel.update({ balance: newBalance }, { where: { id: userid } });
+			res.send(resultMessage.success('success'));
 		} catch (error) {
 			console.log(error);
 			return res.send(resultMessage.error([]));

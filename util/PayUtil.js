@@ -3,7 +3,7 @@ const md5 = require('md5');
 module.exports = {
 	// 生成随机字符串
 	getNonceStr(num) {
-		if (num) num = 32;
+		if (!num) num = 32;
 		let str = '';
 		// eslint-disable-next-line
 		let arr = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];

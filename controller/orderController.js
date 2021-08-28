@@ -8,7 +8,7 @@ router.get('/getAllByPagesize', (req, res) => {
 	orderService.getAllByPagesize(req, res);
 });
 
-// 订单数据汇总 getDataNum
+// 订单数据汇总
 router.get('/getDataNum', (req, res) => {
 	orderService.getDataNum(req, res);
 });

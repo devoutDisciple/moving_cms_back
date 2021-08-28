@@ -18,4 +18,9 @@ router.get('/getAllMoneyByType', (req, res) => {
 	billService.getAllMoneyByType(req, res);
 });
 
+// 修改用户余额
+router.post('/updateMoney', (req, res) => {
+	billService.updateMoney(req, res);
+});
+
 module.exports = router;

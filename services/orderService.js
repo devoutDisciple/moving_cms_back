@@ -116,11 +116,16 @@ module.exports = {
 				type: sequelize.QueryTypes.SELECT,
 			});
 			// 全部收入
-			let totalMoney = await billModel.sum('money');
+			let totalMoney = await billModel.sum('money', { where: { pay_type: ['wechat', 'alipay'] } });
 			// 今天收入
-			let todayMoney = await sequelize.query('select sum(money) as count from `bill` where to_days(create_time) = to_days(now())', {
-				type: sequelize.QueryTypes.SELECT,
-			});
+			let todayMoney = await sequelize.query(
+				'select sum(money) as count from `bill` where to_days(create_time) = to_days(now())  and (pay_type="wechat" or pay_type="alipay")',
+				{
+					type: sequelize.QueryTypes.SELECT,
+				},
+			);
+			// 修正金额
+			let updateMoney = await billModel.sum('money', { where: { type: 'update' } });
 			// 会员数量
 			const totalUserNum = await UserModel.count();
 			// 今日新增
@@ -147,6 +152,7 @@ module.exports = {
 			abledCabinetCellNum = totalCabinetCellNum - usedCabinetCellNum;
 			todayOrderNum = Number(todayOrderNum[0].count);
 			totalMoney = Number(totalMoney).toFixed(2);
+			updateMoney = Number(updateMoney).toFixed(2);
 			todayMoney = Number(todayMoney[0].count).toFixed(2);
 			todayUserNum = Number(todayUserNum[0].count);
 			res.send(
@@ -157,6 +163,7 @@ module.exports = {
 					todayMoney,
 					totalUserNum,
 					todayUserNum,
+					updateMoney,
 					totalCabinetCellNum,
 					abledCabinetCellNum,
 					cabinetUseTimes,

@@ -33,4 +33,9 @@ router.post('/add', upload.single('file'), (req, res) => {
 	adverService.addAdver(req, res, filename);
 });
 
+// 删除
+router.post('/delete', (req, res) => {
+	adverService.deleteAdver(req, res);
+});
+
 module.exports = router;

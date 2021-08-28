@@ -48,4 +48,16 @@ module.exports = {
 			return res.send(resultMessage.error([]));
 		}
 	},
+
+	// 删除
+	deleteAdver: async (req, res) => {
+		try {
+			const { id } = req.body;
+			await advertisingModel.update({ is_delete: 2 }, { where: { id } });
+			res.send(resultMessage.success('success'));
+		} catch (error) {
+			console.log(error);
+			return res.send(resultMessage.error([]));
+		}
+	},
 };
